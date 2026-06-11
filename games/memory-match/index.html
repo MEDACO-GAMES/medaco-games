@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Kids: Medicine Memory Match — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f0fff4;--s:#fff;--s2:#dcfce7;--bd:#bbf7d0;--tx:#14321e;--mu:#3d6b4f;
+  --pr:#15803d;--ph:#166534;--fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 10px rgba(0,80,40,.1);--sh2:0 8px 28px rgba(0,80,40,.18);
+}
+[data-theme=dark]{
+  --bg:#0a1f12;--s:#0f2b1a;--s2:#143521;--bd:#1a4d28;--tx:#d1fae5;--mu:#6ee7b7;
+  --pr:#34d468;--ph:#4ade80;--sh:0 2px 10px rgba(0,0,0,.3);--sh2:0 8px 28px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font:inherit;border:none;background:none}
+img{display:block;max-width:100%;height:auto}
+nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.ni{max-width:1100px;margin:0 auto;padding:0 18px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn)}
+.back:hover{text-decoration:underline}
+.nav-title{font-family:var(--fn);font-weight:900;font-size:1rem}
+.nav-right{display:flex;gap:8px;align-items:center}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu)}
+.tt:hover{background:var(--s2);color:var(--pr)}
+.snd-btn{padding:7px 14px;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.82rem;background:#27ae60;color:#fff}
+.snd-btn.off{background:#95a5a6}
+.admin-btn{padding:7px 14px;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.82rem;background:#34495e;color:#fff}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
+.admin-panel{display:none;background:var(--s);border:2px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:var(--sh)}
+.admin-panel h3{font-family:var(--fn);font-weight:900;font-size:1.15rem;margin-bottom:16px}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+@media(max-width:540px){.ap-grid{grid-template-columns:1fr}}
+.ap-box{border:2px dashed var(--bd);border-radius:10px;padding:14px;background:var(--bg)}
+.ap-box label{display:block;font-weight:700;font-size:.82rem;margin-bottom:6px;color:var(--mu)}
+.ap-box input[type=text],.ap-box textarea{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:8px;background:var(--s);color:var(--tx);font-family:var(--fb);font-size:.88rem;margin-bottom:10px}
+.ap-box textarea{min-height:70px;resize:vertical}
+.ap-box input[type=file]{width:100%;padding:6px;border:1.5px solid var(--bd);border-radius:8px;background:var(--s);color:var(--tx);margin-bottom:10px;font-size:.83rem}
+.preview{width:100%;height:120px;border:2px dashed var(--bd);border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;color:var(--mu);font-size:.82rem}
+.preview img{width:100%;height:100%;object-fit:cover}
+.btn-add{padding:11px 24px;background:#27ae60;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem}
+.btn-add:hover{background:#219a52}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-height:340px;overflow-y:auto;margin-top:14px}
+.card-item{border:1.5px solid var(--bd);border-radius:9px;padding:11px;background:var(--bg)}
+.card-item-name{font-family:var(--fn);font-weight:800;font-size:.85rem;margin-bottom:4px}
+.card-item-desc{font-size:.75rem;color:var(--mu);margin-bottom:8px;line-height:1.45}
+.btn-del{width:100%;padding:5px;background:#e74c3c;color:#fff;border-radius:6px;font-size:.78rem;font-weight:700}
+.btn-del:hover{background:#c0392b}
+.btn-reset{margin-top:12px;padding:8px 18px;background:#e74c3c;color:#fff;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.83rem}
+.btn-close-admin{margin-top:10px;padding:8px 18px;background:#95a5a6;color:#fff;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.83rem}
+.page-title{text-align:center;margin-bottom:22px}
+.page-title h1{font-family:var(--fn);font-weight:900;font-size:clamp(1.5rem,4vw,2.2rem);margin-bottom:6px}
+.page-title p{color:var(--mu);font-size:.92rem}
+.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin:18px 0}
+.level-card{border-radius:16px;padding:24px;box-shadow:var(--sh2);position:relative;transition:transform .2s}
+.level-card:hover{transform:translateY(-3px)}
+.level-card.locked{opacity:.55}
+.lock-badge{position:absolute;top:14px;right:14px;padding:3px 11px;border-radius:999px;font-size:.72rem;font-weight:700;color:#fff}
+.level-card h3{font-family:var(--fn);font-weight:900;font-size:1.3rem;margin-bottom:10px}
+.level-meta{font-size:.83rem;margin-bottom:14px;line-height:1.9}
+.level-stars{margin-top:6px;font-size:.83rem;font-weight:700}
+.lc-easy{background:linear-gradient(135deg,#a8e6cf,#81c784)}
+.lc-easy h3{color:#1b5e20}.lc-easy .level-meta{color:#2e7d32}
+.lc-medium{background:linear-gradient(135deg,#ffd89b,#ffa726)}
+.lc-medium h3{color:#e65100}.lc-medium .level-meta{color:#f57c00}
+.lc-hard{background:linear-gradient(135deg,#ff9a9e,#e74c3c)}
+.lc-hard h3{color:#c0392b}.lc-hard .level-meta{color:#d32f2f}
+.btn-level{width:100%;padding:12px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.95rem;color:#fff;margin-top:4px}
+.btn-easy{background:#27ae60}.btn-easy:hover{background:#219a52}
+.btn-medium{background:#f39c12}.btn-medium:hover{background:#d68910}
+.btn-hard{background:#e74c3c}.btn-hard:hover{background:#c0392b}
+.btn-locked{background:#95a5a6;cursor:not-allowed}
+#game-screen{display:none}
+.stats-bar{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+.stat{padding:10px 18px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;color:#fff}
+.stat-level{background:#3498db}
+.stat-timer{background:#f39c12}
+.stat-timer.urgent{background:#e74c3c}
+.stat-moves{background:#9b59b6}
+.stat-matched{background:#27ae60}
+#game-board{display:grid;gap:10px;margin:16px 0;justify-items:center}
+.memory-card{width:100%;max-width:150px;aspect-ratio:3/4;perspective:800px;cursor:pointer;position:relative}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.memory-card.flipped .card-inner,.memory-card.matched .card-inner{transform:rotateY(180deg)}
+.card-back,.card-front{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;box-shadow:var(--sh)}
+.card-back{background:linear-gradient(135deg,var(--pr),var(--ph));color:#fff;font-size:2.2rem;font-weight:900}
+.card-front{background:var(--s);border:2px solid var(--bd);transform:rotateY(180deg);font-family:var(--fn);font-weight:800;font-size:.82rem;line-height:1.35;color:var(--tx)}
+.card-front img{width:100%;height:55%;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.card-front .card-text{font-size:.78rem}
+.memory-card.matched .card-front{border-color:#27ae60;background:#dcfce7}
+.memory-card.matched .card-back{background:linear-gradient(135deg,#27ae60,#166534)}
+.controls{text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-back{padding:11px 22px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem}
+.btn-restart{padding:11px 22px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem}
+.btn-back:hover{background:#7f8c8d}.btn-restart:hover{background:#2980b9}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;justify-content:center;align-items:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--s);padding:36px 28px;border-radius:18px;text-align:center;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal-emoji{font-size:72px;margin-bottom:14px}
+.modal-title{font-family:var(--fn);font-weight:900;font-size:1.6rem;margin-bottom:4px}
+.modal-stars{font-size:44px;margin:14px 0}
+.modal-stats{font-size:.92rem;line-height:2.1;color:var(--mu);margin-bottom:22px}
+.modal-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-choose{padding:13px 24px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem}
+.btn-again{padding:13px 24px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem}
+.btn-next{padding:13px 24px;background:#27ae60;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;display:none}
+.btn-choose:hover{background:#7f8c8d}.btn-again:hover{background:#2980b9}.btn-next:hover{background:#219a52}
+@media(max-width:600px){
+  .memory-card{max-width:120px}
+  .card-back{font-size:1.7rem}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="ni">
+    <a href="../../index.html" class="back">&#8592; All Games</a>
+    <span class="nav-title">🌲 Medicine Memory Match</span>
+    <div class="nav-right">
+      <button class="snd-btn" id="snd-btn" onclick="toggleSound()">🔊 Sound: ON</button>
+      <button class="admin-btn" onclick="toggleAdmin()">⚙️ Manage Cards</button>
+      <button class="tt" data-theme-toggle aria-label="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="admin-panel" id="admin-panel">
+    <h3>📝 Card Management</h3>
+    <div class="ap-grid">
+      <div class="ap-box">
+        <label>Medicine Name</label>
+        <input type="text" id="inp-med" placeholder="e.g. Amoxicillin">
+        <label>Medicine Image (optional)</label>
+        <input type="file" id="inp-med-img" accept="image/*" onchange="previewImg(event,'prev-med')">
+        <div class="preview" id="prev-med">Preview</div>
+      </div>
+      <div class="ap-box">
+        <label>Description</label>
+        <textarea id="inp-desc" placeholder="e.g. Fights bacterial infections"></textarea>
+        <label>Description Image (optional)</label>
+        <input type="file" id="inp-desc-img" accept="image/*" onchange="previewImg(event,'prev-desc')">
+        <div class="preview" id="prev-desc">Preview</div>
+      </div>
+    </div>
+    <button class="btn-add" onclick="addPair()">➕ Add Card Pair</button>
+    <div style="margin-top:20px">
+      <strong style="font-family:var(--fn);font-size:.9rem">Existing Pairs (<span id="card-count">0</span>)</strong>
+      <div class="cards-grid" id="cards-list"></div>
+      <button class="btn-reset" onclick="resetCards()">🗑️ Reset to Defaults</button>
+    </div>
+    <button class="btn-close-admin" onclick="toggleAdmin()">Close</button>
+  </div>
+
+  <div class="page-title">
+    <h1>🌲 Forest Kids: Medicine Memory Match</h1>
+    <p>Match each medicine with its description. Choose your difficulty!</p>
+  </div>
+
+  <div id="level-screen">
+    <div class="level-grid">
+      <div class="level-card lc-easy">
+        <h3>🟢 Easy</h3>
+        <div class="level-meta">
+          <div>📊 4 pairs (8 cards)</div>
+          <div>⏱️ 90 seconds</div>
+          <div class="level-stars" id="easy-stars">⭐⭐⭐ Not Completed</div>
+        </div>
+        <button class="btn-level btn-easy" id="btn-easy" onclick="startGame('easy')">Start Easy</button>
+      </div>
+
+      <div class="level-card lc-medium locked" id="card-medium">
+        <div class="lock-badge" style="background:#e65100" id="lock-medium">🔒 LOCKED</div>
+        <h3>🟡 Medium</h3>
+        <div class="level-meta">
+          <div>📊 6 pairs (12 cards)</div>
+          <div>⏱️ 120 seconds</div>
+          <div class="level-stars" id="medium-stars">⭐⭐⭐ Not Completed</div>
+        </div>
+        <button class="btn-level btn-locked" id="btn-medium" onclick="startGame('medium')" disabled>Complete Easy First</button>
+      </div>
+
+      <div class="level-card lc-hard locked" id="card-hard">
+        <div class="lock-badge" style="background:#c0392b" id="lock-hard">🔒 LOCKED</div>
+        <h3>🔴 Hard</h3>
+        <div class="level-meta">
+          <div>📊 8 pairs (16 cards)</div>
+          <div>⏱️ 150 seconds</div>
+          <div class="level-stars" id="hard-stars">⭐⭐⭐ Not Completed</div>
+        </div>
+        <button class="btn-level btn-locked" id="btn-hard" onclick="startGame('hard')" disabled>Complete Medium First</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="game-screen">
+    <div class="stats-bar">
+      <div class="stat stat-level">Level: <span id="lbl-level">Easy</span></div>
+      <div class="stat stat-timer" id="stat-timer">⏱️ <span id="lbl-timer">90</span>s</div>
+      <div class="stat stat-moves">🎯 Moves: <span id="lbl-moves">0</span></div>
+      <div class="stat stat-matched">✓ <span id="lbl-matched">0</span>/<span id="lbl-total">4</span></div>
+    </div>
+    <div id="game-board"></div>
+    <div class="controls">
+      <button class="btn-back" onclick="backToLevels()">← Back to Levels</button>
+      <button class="btn-restart" onclick="restartGame()">🔄 Restart Level</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="mod-emoji">🎉</div>
+    <div class="modal-title" id="mod-title">Complete!</div>
+    <div class="modal-stars" id="mod-stars">⭐⭐⭐</div>
+    <div class="modal-stats" id="mod-stats"></div>
+    <div class="modal-btns">
+      <button class="btn-choose" onclick="backToLevels()">Choose Level</button>
+      <button class="btn-again" onclick="restartGame()">Play Again</button>
+      <button class="btn-next" id="btn-next">Next Level →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let audioCtx=null, soundOn=true;
+  function ctx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+  function tone(freq,type,vol,dur,start){
+    const o=ctx().createOscillator(),g=ctx().createGain();
+    o.connect(g);g.connect(ctx().destination);
+    o.frequency.value=freq;o.type=type;
+    g.gain.setValueAtTime(vol,start);
+    g.gain.exponentialRampToValueAtTime(0.001,start+dur);
+    o.start(start);o.stop(start+dur+.01);
+  }
+  function sFlip(){if(!soundOn)return;tone(800,'sine',.3,.1,ctx().currentTime);}
+  function sMatch(){if(!soundOn)return;[523,659,784].forEach((f,i)=>tone(f,'sine',.2,.3,ctx().currentTime+i*.08));}
+  function sMiss(){if(!soundOn)return;tone(200,'sawtooth',.2,.2,ctx().currentTime);}
+  function sWin(){if(!soundOn)return;[523,587,659,784,1047].forEach((f,i)=>tone(f,'triangle',.25,.4,ctx().currentTime+i*.15));}
+  function sLose(){if(!soundOn)return;[400,350,300,250].forEach((f,i)=>tone(f,'sawtooth',.15,.3,ctx().currentTime+i*.15));}
+  function sClick(){if(!soundOn)return;tone(1200,'sine',.1,.05,ctx().currentTime);}
+
+  window.toggleSound=function(){
+    soundOn=!soundOn;
+    const b=document.getElementById('snd-btn');
+    b.textContent=soundOn?'🔊 Sound: ON':'🔇 Sound: OFF';
+    b.className=soundOn?'snd-btn':'snd-btn off';
+    if(soundOn)sClick();
+  };
+
+  const DEFAULTS=[
+    {medicine:'Acetaminophen',description:'Relieves pain and lowers fever for little hikers',medicineImg:'',descImg:''},
+    {medicine:'Ibuprofen',description:'Calms fever and reduces swelling in woodland kids',medicineImg:'',descImg:''},
+    {medicine:'Amoxicillin',description:'Fights bacterial infections in forest explorers',medicineImg:'',descImg:''},
+    {medicine:'Diphenhydramine',description:'Allergy relief for forest pollen sufferers',medicineImg:'',descImg:''},
+    {medicine:'Chlorpheniramine',description:'Soothes allergies at forest camp',medicineImg:'',descImg:''},
+    {medicine:'Pseudoephedrine',description:'Nasal relief on a windy forest trail',medicineImg:'',descImg:''},
+    {medicine:'Hydrocortisone cream',description:'Soothes woodland skin itch and rashes',medicineImg:'',descImg:''},
+    {medicine:'Saline nasal spray',description:'Moisturises and clears nasal passages',medicineImg:'',descImg:''}
+  ];
+
+  const LEVELS={easy:{pairs:4,time:90,cols:4},medium:{pairs:6,time:120,cols:4},hard:{pairs:8,time:150,cols:4}};
+  let savedCards=[...DEFAULTS];
+  let progress={};
+  let currentLevel='easy';
+  let gameCards=[],flipped=[],matchedPairs=0,moves=0,timeLeft=0,timer=null,canFlip=true;
+
+  function load(){
+    try{
+      const sc=sessionStorage.getItem('medacoCards');
+      const sp=sessionStorage.getItem('medacoProgress');
+      if(sc)savedCards=JSON.parse(sc);
+      if(sp)progress=JSON.parse(sp);
+    }catch(e){}
+  }
+  function save(){
+    try{
+      sessionStorage.setItem('medacoCards',JSON.stringify(savedCards));
+      sessionStorage.setItem('medacoProgress',JSON.stringify(progress));
+    }catch(e){}
+  }
+  load();
+
+  window.toggleAdmin=function(){
+    sClick();
+    const p=document.getElementById('admin-panel');
+    p.style.display=p.style.display==='none'?'block':'none';
+    renderCardsList();
+  };
+
+  window.previewImg=function(e,id){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{document.getElementById(id).innerHTML='<img src=\"'+ev.target.result+'\">';};
+    r.readAsDataURL(f);
+  };
+
+  window.addPair=function(){
+    const med=document.getElementById('inp-med').value.trim();
+    const desc=document.getElementById('inp-desc').value.trim();
+    if(!med||!desc){alert('Please fill in both fields.');return;}
+    const mf=document.getElementById('inp-med-img').files[0];
+    const df=document.getElementById('inp-desc-img').files[0];
+    const reads=[
+      mf?new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(mf);}):Promise.resolve(''),
+      df?new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(df);}):Promise.resolve('')
+    ];
+    Promise.all(reads).then(([mi,di])=>{
+      savedCards.push({medicine:med,description:desc,medicineImg:mi,descImg:di});
+      save();renderCardsList();updateLevelUI();sClick();
+      document.getElementById('inp-med').value='';
+      document.getElementById('inp-desc').value='';
+      document.getElementById('inp-med-img').value='';
+      document.getElementById('inp-desc-img').value='';
+      document.getElementById('prev-med').innerHTML='Preview';
+      document.getElementById('prev-desc').innerHTML='Preview';
+      alert('Card pair added!');
+    });
+  };
+
+  window.deleteCard=function(i){
+    if(!confirm('Delete this pair?'))return;
+    savedCards.splice(i,1);save();renderCardsList();updateLevelUI();sClick();
+  };
+
+  window.resetCards=function(){
+    if(!confirm('Reset to default cards?'))return;
+    savedCards=[...DEFAULTS];save();renderCardsList();updateLevelUI();sClick();
+  };
+
+  function renderCardsList(){
+    document.getElementById('card-count').textContent=savedCards.length;
+    const l=document.getElementById('cards-list');
+    if(!savedCards.length){l.innerHTML='<p style=\"color:var(--mu);padding:16px;font-size:.85rem\">No cards yet.</p>';return;}
+    l.innerHTML=savedCards.map((cd,i)=>`
+      <div class=\"card-item\">
+        <div class=\"card-item-name\">${cd.medicine}</div>
+        <div class=\"card-item-desc\">${cd.description}</div>
+        <button class=\"btn-del\" onclick=\"deleteCard(${i})\">Delete</button>
+      </div>`).join('');
+  }
+
+  function updateLevelUI(){
+    const ep=progress.easy||0,mp=progress.medium||0,hp=progress.hard||0;
+    document.getElementById('easy-stars').textContent=ep?'⭐'.repeat(ep)+' Completed!':'Not yet completed';
+    document.getElementById('medium-stars').textContent=mp?'⭐'.repeat(mp)+' Completed!':'Not yet completed';
+    document.getElementById('hard-stars').textContent=hp?'⭐'.repeat(hp)+' Completed!':'Not yet completed';
+
+    const eb=document.getElementById('btn-easy');
+    if(savedCards.length<4){eb.disabled=true;eb.textContent='Need 4+ pairs';eb.className='btn-level btn-locked';}
+    else{eb.disabled=false;eb.textContent='Start Easy';eb.className='btn-level btn-easy';}
+
+    const mc=document.getElementById('card-medium'),mb=document.getElementById('btn-medium'),lm=document.getElementById('lock-medium');
+    if(ep>0){mc.classList.remove('locked');mb.disabled=false;mb.textContent='Start Medium';mb.className='btn-level btn-medium';lm.style.display='none';}
+
+    const hc=document.getElementById('card-hard'),hb=document.getElementById('btn-hard'),lh=document.getElementById('lock-hard');
+    if(mp>0){hc.classList.remove('locked');hb.disabled=false;hb.textContent='Start Hard';hb.className='btn-level btn-hard';lh.style.display='none';}
+  }
+
+  function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+  window.startGame=function(level){
+    if(savedCards.length<LEVELS[level].pairs){alert('Not enough cards for this level!');return;}
+    sClick();
+    currentLevel=level;
+    const cfg=LEVELS[level];
+    matchedPairs=0;moves=0;flipped=[];timeLeft=cfg.time;canFlip=true;
+    if(timer)clearInterval(timer);
+
+    document.getElementById('level-screen').style.display='none';
+    document.getElementById('game-screen').style.display='block';
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('lbl-level').textContent=level.charAt(0).toUpperCase()+level.slice(1);
+    document.getElementById('lbl-total').textContent=cfg.pairs;
+    document.getElementById('lbl-matched').textContent='0';
+    document.getElementById('lbl-moves').textContent='0';
+    document.getElementById('lbl-timer').textContent=timeLeft;
+    document.getElementById('stat-timer').classList.remove('urgent');
+
+    buildBoard(cfg.pairs);
+    startTimer();
+  };
+
+  function buildBoard(pairs){
+    const sel=shuffle(savedCards).slice(0,pairs);
+    gameCards=[];
+    sel.forEach((cd,pid)=>{
+      gameCards.push({pairId:pid,type:'medicine',content:cd.medicine,image:cd.medicineImg});
+      gameCards.push({pairId:pid,type:'description',content:cd.description,image:cd.descImg});
+    });
+    const cards=shuffle(gameCards);
+    const board=document.getElementById('game-board');
+    board.innerHTML='';
+    board.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+    board.style.maxWidth='650px';
+    board.style.margin='16px auto';
+
+    cards.forEach((cd,idx)=>{
+      const el=document.createElement('div');
+      el.className='memory-card';
+      const imgH=cd.image?`<img src=\"${cd.image}\" alt=\"${cd.content}\" loading=\"lazy\">`:'';
+      el.innerHTML=`<div class=\"card-inner\"><div class=\"card-back\">🌲</div><div class=\"card-front\">${imgH}<div class=\"card-text\">${cd.content}</div></div></div>`;
+      el.addEventListener('click',()=>flipCard(el,cd));
+      board.appendChild(el);
+    });
+  }
+
+  function flipCard(el,cd){
+    if(!canFlip||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+    sFlip();
+    el.classList.add('flipped');
+    flipped.push({el,cd});
+    if(flipped.length===2){
+      canFlip=false;
+      moves++;
+      document.getElementById('lbl-moves').textContent=moves;
+      setTimeout(checkMatch,800);
+    }
+  }
+
+  function checkMatch(){
+    const [a,b]=flipped;
+    if(a.cd.pairId===b.cd.pairId){
+      sMatch();
+      a.el.classList.add('matched');b.el.classList.add('matched');
+      matchedPairs++;
+      document.getElementById('lbl-matched').textContent=matchedPairs;
+      if(navigator.vibrate)navigator.vibrate([50,30,50]);
+      if(matchedPairs===LEVELS[currentLevel].pairs)setTimeout(()=>endGame(true),500);
+    } else {
+      sMiss();
+      if(navigator.vibrate)navigator.vibrate(80);
+      setTimeout(()=>{a.el.classList.remove('flipped');b.el.classList.remove('flipped');},400);
+    }
+    flipped=[];canFlip=true;
+  }
+
+  function startTimer(){
+    timer=setInterval(()=>{
+      timeLeft--;
+      document.getElementById('lbl-timer').textContent=timeLeft;
+      if(timeLeft<=10)document.getElementById('stat-timer').classList.add('urgent');
+      if(timeLeft<=0){clearInterval(timer);endGame(false);}
+    },1000);
+  }
+
+  function endGame(won){
+    clearInterval(timer);canFlip=false;
+    const cfg=LEVELS[currentLevel];
+    let stars=0;
+    if(won){
+      sWin();
+      const used=cfg.time-timeLeft,eff=moves/cfg.pairs;
+      stars=(eff<=1.5&&used<=cfg.time*.7)?3:eff<=2.5?2:1;
+      progress[currentLevel]=Math.max(progress[currentLevel]||0,stars);
+      save();
+      document.getElementById('mod-emoji').textContent='🎉';
+      document.getElementById('mod-title').textContent='Level Complete!';
+      document.getElementById('mod-title').style.color='#27ae60';
+      document.getElementById('mod-stars').textContent='⭐'.repeat(stars);
+      document.getElementById('mod-stats').innerHTML=`<div>⏱️ Time used: ${cfg.time-timeLeft}s</div><div>🎯 Moves: ${moves}</div><div>✓ Matched: ${matchedPairs}/${cfg.pairs} pairs</div>`;
+      const nb=document.getElementById('btn-next');
+      const nextLvl={easy:'medium',medium:'hard'}[currentLevel];
+      if(nextLvl){
+        nb.style.display='inline-block';
+        nb.onclick=()=>{sClick();document.getElementById('modal').classList.remove('show');startGame(nextLvl);};
+      } else nb.style.display='none';
+    } else {
+      sLose();
+      document.getElementById('mod-emoji').textContent='⏰';
+      document.getElementById('mod-title').textContent=\"Time's Up!\";
+      document.getElementById('mod-title').style.color='#e74c3c';
+      document.getElementById('mod-stars').textContent='';
+      document.getElementById('mod-stats').innerHTML=`<div>✓ Matched: ${matchedPairs}/${cfg.pairs} pairs</div><div>🎯 Moves: ${moves}</div><div>Try again!</div>`;
+      document.getElementById('btn-next').style.display='none';
+    }
+    document.getElementById('modal').classList.add('show');
+    updateLevelUI();
+  }
+
+  window.backToLevels=function(){
+    sClick();
+    clearInterval(timer);
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('game-screen').style.display='none';
+    document.getElementById('level-screen').style.display='block';
+    updateLevelUI();
+  };
+
+  window.restartGame=function(){
+    sClick();
+    document.getElementById('modal').classList.remove('show');
+    startGame(currentLevel);
+  };
+
+  renderCardsList();
+  updateLevelUI();
+
+  (function(){
+    const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+    let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    r.setAttribute('data-theme',d);
+    t&&t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);});
+  })();
+})();
+</script>
+</body>
+</html>
