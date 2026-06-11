@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help Leo Reach Zara — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#fffdf0;--s:#fff;--s2:#fffbe6;--bd:#ffe899;
+  --tx:#2d2200;--mu:#7a6200;--pr:#e6a800;--ph:#b87d00;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 10px rgba(180,120,0,.1);--sh2:0 8px 28px rgba(180,120,0,.18);
+}
+[data-theme=dark]{
+  --bg:#1a1500;--s:#221c00;--s2:#2d2500;--bd:#4a3c00;
+  --tx:#fff8d6;--mu:#c9a94a;--pr:#f5c842;--ph:#e6a800;
+  --sh:0 2px 10px rgba(0,0,0,.3);--sh2:0 8px 28px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+
+nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
+.ni{max-width:900px;margin:0 auto;padding:0 18px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nav-title{font-family:var(--fn);font-weight:900;font-size:1rem;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);}
+.tt:hover{background:var(--s2);color:var(--pr);}
+
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px;}
+
+.page-title{text-align:center;margin-bottom:6px;}
+.page-title h1{font-family:var(--fn);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);margin-bottom:6px;}
+.page-title p{color:var(--mu);font-size:.9rem;margin-bottom:24px;}
+
+/* TABS */
+.tabs{display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
+.tab{padding:10px 26px;border-radius:999px;font-family:var(--fn);font-weight:800;font-size:.92rem;border:2px solid var(--bd);background:var(--s);color:var(--mu);transition:all .18s;}
+.tab.active{background:var(--pr);color:#fff;border-color:var(--pr);}
+.tab:hover:not(.active){background:var(--s2);color:var(--pr);}
+
+/* MAZE SECTION */
+.maze-section{display:none;}
+.maze-section.active{display:block;}
+
+.maze-wrap{text-align:center;}
+.maze-wrap h2{font-family:var(--fn);font-weight:900;font-size:1.25rem;margin-bottom:4px;}
+.maze-desc{color:var(--mu);font-size:.85rem;margin-bottom:18px;}
+
+/* STATUS BAR */
+.status-bar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+.stat{padding:8px 18px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.88rem;color:#fff;}
+.st-moves{background:#9b59b6;}
+.st-time{background:#3498db;}
+.st-best{background:#27ae60;}
+
+/* MAZE TABLE */
+.maze-outer{display:flex;justify-content:center;margin-bottom:20px;overflow-x:auto;}
+table.maze-grid{border-collapse:collapse;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+table.maze-grid td{
+  width:44px;height:44px;
+  border:1px solid rgba(0,0,0,.18);
+  text-align:center;font-size:24px;
+  line-height:44px;
+}
+@media(max-width:480px){
+  table.maze-grid td{width:34px;height:34px;line-height:34px;font-size:18px;}
+}
+
+/* CONTROLS */
+.d-pad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px;justify-content:center;margin:0 auto 20px;}
+.d-pad button{width:52px;height:52px;border-radius:10px;font-size:20px;font-weight:700;border:2px solid var(--bd);background:var(--s);color:var(--tx);box-shadow:var(--sh);transition:background .15s,transform .1s;}
+.d-pad button:hover{background:var(--s2);}
+.d-pad button:active{transform:scale(.93);background:var(--pr);color:#fff;}
+.d-pad .empty{visibility:hidden;}
+@media(max-width:400px){
+  .d-pad{grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);}
+  .d-pad button{width:46px;height:46px;font-size:18px;}
+}
+
+.btn-restart{display:block;margin:0 auto;padding:10px 28px;border-radius:9px;background:var(--s);border:2px solid var(--bd);font-family:var(--fn);font-weight:800;font-size:.9rem;color:var(--tx);transition:background .18s;}
+.btn-restart:hover{background:var(--s2);}
+
+/* LEGEND */
+.legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:20px;font-size:.8rem;color:var(--mu);}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.15);}
+
+/* WIN MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;justify-content:center;align-items:center;padding:16px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--s);padding:36px 28px;border-radius:18px;text-align:center;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.modal-emoji{font-size:64px;margin-bottom:12px;}
+.modal-title{font-family:var(--fn);font-weight:900;font-size:1.6rem;margin-bottom:8px;color:var(--pr);}
+.modal-stats{font-size:.9rem;color:var(--mu);line-height:2;margin-bottom:22px;}
+.modal-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-play-again{padding:12px 24px;background:var(--pr);color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-play-again:hover{background:var(--ph);}
+.btn-other{padding:12px 24px;background:var(--s2);border:1.5px solid var(--bd);color:var(--tx);border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-other:hover{background:var(--bd);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="ni">
+    <a href="../../index.html" class="back">&#8592; All Games</a>
+    <span class="nav-title">🦁 Help Leo Reach Zara</span>
+    <button class="tt" data-theme-toggle aria-label="Toggle dark mode">◐</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-title">
+    <h1>🦁 Help Leo Reach Zara 🕊️</h1>
+    <p>Guide Leo the lion through the maze to reach Zara the dove. Use the arrow buttons or your keyboard!</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" id="tab-hard" onclick="switchMaze('hard')">🔴 Harder Maze</button>
+    <button class="tab" id="tab-easy" onclick="switchMaze('easy')">🟢 Easier Maze</button>
+  </div>
+
+  <!-- HARDER MAZE -->
+  <div class="maze-section active" id="section-hard">
+    <div class="maze-wrap">
+      <h2>Harder Maze</h2>
+      <p class="maze-desc">10×10 grid &mdash; find the path from 🦁 to 🕊️</p>
+      <div class="status-bar">
+        <div class="stat st-moves">🎯 Moves: <span id="hard-moves">0</span></div>
+        <div class="stat st-time">⏱️ <span id="hard-time">0</span>s</div>
+        <div class="stat st-best" id="hard-best-stat" style="display:none">⭐ Best: <span id="hard-best">–</span></div>
+      </div>
+      <div class="maze-outer">
+        <table class="maze-grid" id="ff-maze"></table>
+      </div>
+      <div class="d-pad">
+        <div class="empty"></div>
+        <button onclick="ffMove(0,-1)" aria-label="Up">⬆️</button>
+        <div class="empty"></div>
+        <button onclick="ffMove(-1,0)" aria-label="Left">⬅️</button>
+        <button onclick="ffRestart()" aria-label="Restart" title="Restart">🔁</button>
+        <button onclick="ffMove(1,0)" aria-label="Right">➡️</button>
+        <div class="empty"></div>
+        <button onclick="ffMove(0,1)" aria-label="Down">⬇️</button>
+        <div class="empty"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EASIER MAZE -->
+  <div class="maze-section" id="section-easy">
+    <div class="maze-wrap">
+      <h2>Easier Maze</h2>
+      <p class="maze-desc">8×8 grid &mdash; a simpler path from 🦁 to 🕊️</p>
+      <div class="status-bar">
+        <div class="stat st-moves">🎯 Moves: <span id="easy-moves">0</span></div>
+        <div class="stat st-time">⏱️ <span id="easy-time">0</span>s</div>
+        <div class="stat st-best" id="easy-best-stat" style="display:none">⭐ Best: <span id="easy-best">–</span></div>
+      </div>
+      <div class="maze-outer">
+        <table class="maze-grid" id="med-maze"></table>
+      </div>
+      <div class="d-pad">
+        <div class="empty"></div>
+        <button onclick="medMove(0,-1)" aria-label="Up">⬆️</button>
+        <div class="empty"></div>
+        <button onclick="medMove(-1,0)" aria-label="Left">⬅️</button>
+        <button onclick="medRestart()" aria-label="Restart" title="Restart">🔁</button>
+        <button onclick="medMove(1,0)" aria-label="Right">➡️</button>
+        <div class="empty"></div>
+        <button onclick="medMove(0,1)" aria-label="Down">⬇️</button>
+        <div class="empty"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#ffe066;"></div> Start</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b3e5fc;"></div> Goal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a8d5ba;"></div> Path</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4b3f2f;"></div> Wall</div>
+  </div>
+
+</div>
+
+<!-- WIN MODAL -->
+<div class="modal-overlay" id="win-modal">
+  <div class="modal-box">
+    <div class="modal-emoji">🎉</div>
+    <div class="modal-title">You found Zara!</div>
+    <div class="modal-stats" id="win-stats"></div>
+    <div class="modal-btns">
+      <button class="btn-play-again" id="win-restart">🔁 Play Again</button>
+      <button class="btn-other" onclick="document.getElementById('win-modal').classList.remove('show')">✖ Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  /* ── DARK MODE ── */
+  (function(){
+    const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+    let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    r.setAttribute('data-theme',d);
+    t&&t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);});
+  })();
+
+  /* ── SOUND ── */
+  let audioCtx=null;
+  function ctx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+  function tone(freq,type,vol,dur){
+    try{
+      const o=ctx().createOscillator(),g=ctx().createGain();
+      o.connect(g);g.connect(ctx().destination);
+      o.frequency.value=freq;o.type=type;
+      g.gain.setValueAtTime(vol,ctx().currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx().currentTime+dur);
+      o.start();o.stop(ctx().currentTime+dur+.01);
+    }catch(e){}
+  }
+  function sStep(){tone(600,'sine',.08,.07);}
+  function sBump(){tone(180,'sawtooth',.12,.1);}
+  function sWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,'triangle',.2,.35),i*120));}
+
+  /* ── TAB SWITCH ── */
+  let activeMaze='hard';
+  window.switchMaze=function(which){
+    activeMaze=which;
+    document.getElementById('section-hard').classList.toggle('active',which==='hard');
+    document.getElementById('section-easy').classList.toggle('active',which==='easy');
+    document.getElementById('tab-hard').classList.toggle('active',which==='hard');
+    document.getElementById('tab-easy').classList.toggle('active',which==='easy');
+  };
+
+  /* ── LAYOUTS ── */
+  const ffLayout=[
+    ['wall','wall','wall','wall','wall','wall','wall','wall','wall','wall'],
+    ['start','path','path','path','wall','path','path','path','goal','wall'],
+    ['wall','wall','wall','path','wall','path','wall','wall','path','wall'],
+    ['wall','path','path','path','path','path','wall','path','path','wall'],
+    ['wall','path','wall','wall','wall','path','wall','path','wall','wall'],
+    ['wall','path','wall','path','path','path','wall','path','path','wall'],
+    ['wall','path','wall','path','wall','wall','wall','wall','path','wall'],
+    ['wall','path','path','path','path','path','path','wall','path','wall'],
+    ['wall','wall','wall','wall','wall','wall','path','path','path','wall'],
+    ['wall','wall','wall','wall','wall','wall','wall','wall','wall','wall']
+  ];
+  const medLayout=[
+    ['wall','wall','wall','wall','wall','wall','wall','wall'],
+    ['start','path','path','path','wall','path','goal','wall'],
+    ['wall','wall','wall','path','wall','path','wall','wall'],
+    ['wall','path','path','path','path','path','path','wall'],
+    ['wall','path','wall','wall','wall','wall','path','wall'],
+    ['wall','path','path','path','path','wall','path','wall'],
+    ['wall','wall','wall','path','wall','path','path','wall'],
+    ['wall','wall','wall','wall','wall','wall','wall','wall']
+  ];
+
+  const COLORS={wall:'#4b3f2f',path:'#a8d5ba',start:'#ffe066',goal:'#b3e5fc'};
+
+  /* ── HARDER MAZE STATE ── */
+  let ffPos={x:1,y:1},ffMoves=0,ffTimer=null,ffSecs=0,ffDone=false;
+  let ffBest=null;
+  const ffTable=document.getElementById('ff-maze');
+
+  function ffRender(){
+    ffTable.innerHTML='';
+    for(let y=0;y<ffLayout.length;y++){
+      const tr=document.createElement('tr');
+      for(let x=0;x<ffLayout[y].length;x++){
+        const td=document.createElement('td');
+        const type=ffLayout[y][x];
+        td.style.background=COLORS[type]||'#fff';
+        if(x===ffPos.x&&y===ffPos.y)td.textContent='🦁';
+        else if(type==='goal')td.textContent='🕊️';
+        tr.appendChild(td);
+      }
+      ffTable.appendChild(tr);
+    }
+  }
+
+  function ffStartTimer(){
+    if(ffTimer)return;
+    ffTimer=setInterval(()=>{ffSecs++;document.getElementById('hard-time').textContent=ffSecs;},1000);
+  }
+
+  window.ffMove=function(dx,dy){
+    if(ffDone)return;
+    const nx=ffPos.x+dx,ny=ffPos.y+dy;
+    if(ny<0||ny>=ffLayout.length||nx<0||nx>=ffLayout[0].length||ffLayout[ny][nx]==='wall'){sBump();return;}
+    ffStartTimer();
+    ffPos={x:nx,y:ny};
+    ffMoves++;
+    document.getElementById('hard-moves').textContent=ffMoves;
+    sStep();
+    ffRender();
+    if(ffLayout[ny][nx]==='goal'){
+      clearInterval(ffTimer);ffTimer=null;ffDone=true;
+      sWin();
+      if(ffBest===null||ffMoves<ffBest){
+        ffBest=ffMoves;
+        document.getElementById('hard-best').textContent=ffBest+' moves';
+        document.getElementById('hard-best-stat').style.display='';
+      }
+      showWin(ffMoves,ffSecs,'hard');
+    }
+  };
+
+  window.ffRestart=function(){
+    clearInterval(ffTimer);ffTimer=null;
+    ffPos={x:1,y:1};ffMoves=0;ffSecs=0;ffDone=false;
+    document.getElementById('hard-moves').textContent='0';
+    document.getElementById('hard-time').textContent='0';
+    ffRender();
+  };
+
+  /* ── EASIER MAZE STATE ── */
+  let medPos={x:1,y:1},medMoves=0,medTimer=null,medSecs=0,medDone=false;
+  let medBest=null;
+  const medTable=document.getElementById('med-maze');
+
+  function medRender(){
+    medTable.innerHTML='';
+    for(let y=0;y<medLayout.length;y++){
+      const tr=document.createElement('tr');
+      for(let x=0;x<medLayout[y].length;x++){
+        const td=document.createElement('td');
+        const type=medLayout[y][x];
+        td.style.background=COLORS[type]||'#fff';
+        if(x===medPos.x&&y===medPos.y)td.textContent='🦁';
+        else if(type==='goal')td.textContent='🕊️';
+        tr.appendChild(td);
+      }
+      medTable.appendChild(tr);
+    }
+  }
+
+  function medStartTimer(){
+    if(medTimer)return;
+    medTimer=setInterval(()=>{medSecs++;document.getElementById('easy-time').textContent=medSecs;},1000);
+  }
+
+  window.medMove=function(dx,dy){
+    if(medDone)return;
+    const nx=medPos.x+dx,ny=medPos.y+dy;
+    if(ny<0||ny>=medLayout.length||nx<0||nx>=medLayout[0].length||medLayout[ny][nx]==='wall'){sBump();return;}
+    medStartTimer();
+    medPos={x:nx,y:ny};
+    medMoves++;
+    document.getElementById('easy-moves').textContent=medMoves;
+    sStep();
+    medRender();
+    if(medLayout[ny][nx]==='goal'){
+      clearInterval(medTimer);medTimer=null;medDone=true;
+      sWin();
+      if(medBest===null||medMoves<medBest){
+        medBest=medMoves;
+        document.getElementById('easy-best').textContent=medBest+' moves';
+        document.getElementById('easy-best-stat').style.display='';
+      }
+      showWin(medMoves,medSecs,'easy');
+    }
+  };
+
+  window.medRestart=function(){
+    clearInterval(medTimer);medTimer=null;
+    medPos={x:1,y:1};medMoves=0;medSecs=0;medDone=false;
+    document.getElementById('easy-moves').textContent='0';
+    document.getElementById('easy-time').textContent='0';
+    medRender();
+  };
+
+  /* ── WIN MODAL ── */
+  function showWin(moves,secs,which){
+    document.getElementById('win-stats').innerHTML=
+      `<div>🎯 Moves: ${moves}</div><div>⏱️ Time: ${secs}s</div>`;
+    document.getElementById('win-restart').onclick=function(){
+      document.getElementById('win-modal').classList.remove('show');
+      which==='hard'?ffRestart():medRestart();
+    };
+    setTimeout(()=>document.getElementById('win-modal').classList.add('show'),400);
+  }
+
+  /* ── KEYBOARD ── */
+  document.addEventListener('keydown',(e)=>{
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();
+    if(activeMaze==='hard'){
+      if(e.key==='ArrowUp')ffMove(0,-1);
+      if(e.key==='ArrowDown')ffMove(0,1);
+      if(e.key==='ArrowLeft')ffMove(-1,0);
+      if(e.key==='ArrowRight')ffMove(1,0);
+    } else {
+      if(e.key==='ArrowUp')medMove(0,-1);
+      if(e.key==='ArrowDown')medMove(0,1);
+      if(e.key==='ArrowLeft')medMove(-1,0);
+      if(e.key==='ArrowRight')medMove(1,0);
+    }
+  });
+
+  /* ── INIT ── */
+  ffRender();
+  medRender();
+
+})();
+</script>
+</body>
+</html>

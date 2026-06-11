@@ -3,189 +3,331 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MEDACO Games</title>
+<title>MEDACO Games — Play & Enjoy</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root,[data-theme=light]{
-  --bg:#f0f7ff;--s:#fff;--s2:#e8f4fd;--bd:#c8e0f5;
-  --tx:#1a2b3c;--mu:#4a6580;--pr:#0077cc;--ph:#005fa3;
+  --bg:#f5f7ff;--s:#fff;--s2:#eef0ff;--bd:#d0d5f5;
+  --tx:#1a1d3c;--mu:#4a5080;--pr:#4361ee;--ph:#3451d1;
   --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
-  --sh:0 2px 8px rgba(0,80,160,.1);--sh2:0 8px 28px rgba(0,80,160,.18);
+  --sh:0 2px 12px rgba(40,60,200,.1);
+  --card-sh:0 0 40px rgba(0,0,0,0.55);
 }
 [data-theme=dark]{
-  --bg:#0d1b2a;--s:#112233;--s2:#163047;--bd:#1e3a55;
-  --tx:#d6eaf8;--mu:#7aadcc;--pr:#4faad8;--ph:#6bbfe0;
-  --sh:0 2px 8px rgba(0,0,0,.3);--sh2:0 8px 28px rgba(0,0,0,.45);
+  --bg:#0d0f1f;--s:#131628;--s2:#181c32;--bd:#242a4a;
+  --tx:#d8dcff;--mu:#8890cc;--pr:#6c7fff;--ph:#8e9fff;
+  --sh:0 2px 10px rgba(0,0,0,.35);
+  --card-sh:0 0 40px rgba(0,0,0,0.85);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;transition:background .2s,color .2s;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
 a{text-decoration:none;color:inherit;}
 button{cursor:pointer;font:inherit;border:none;background:none;}
+img{display:block;max-width:100%;height:auto;}
+
+/* ── NAV ── */
 nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
-.ni{max-width:1080px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;justify-content:space-between;}
-.logo{display:flex;align-items:center;gap:10px;font-family:var(--fn);font-weight:900;font-size:1.2rem;letter-spacing:-.02em;}
-.logo-accent{color:var(--pr);}
-.tt{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);transition:background .18s,color .18s;}
-.tt:hover{background:var(--s2);color:var(--pr);}
-.hero{max-width:1080px;margin:0 auto;padding:52px 20px 36px;text-align:center;}
-.badge{display:inline-flex;align-items:center;gap:6px;background:var(--s);border:1.5px solid var(--bd);border-radius:999px;padding:5px 16px;font-size:.78rem;font-weight:700;color:var(--pr);margin-bottom:18px;}
-.hero h1{font-family:var(--fn);font-weight:900;font-size:clamp(1.9rem,5vw,3rem);line-height:1.1;margin-bottom:14px;letter-spacing:-.02em;}
-.hero h1 em{font-style:normal;color:var(--pr);}
-.hero p{font-size:1rem;color:var(--mu);max-width:500px;margin:0 auto 28px;line-height:1.7;}
-.stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;}
-.stn{font-family:var(--fn);font-weight:900;font-size:1.7rem;color:var(--pr);}
-.stl{font-size:.76rem;color:var(--mu);font-weight:600;margin-top:2px;}
-.sec{max-width:1080px;margin:0 auto;padding:10px 20px 56px;}
-.sh{font-family:var(--fn);font-weight:900;font-size:1.4rem;margin-bottom:5px;}
-.ss{color:var(--mu);margin-bottom:24px;font-size:.9rem;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(255px,100%),1fr));gap:18px;}
-.card{background:var(--s);border:1.5px solid var(--bd);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s,border-color .2s;}
-.card:hover{transform:translateY(-5px);box-shadow:var(--sh2);border-color:var(--pr);}
-.thumb{height:122px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;}
-.tb-bl{background:linear-gradient(135deg,#dbeafe,#bfdbfe);}
-.tb-gr{background:linear-gradient(135deg,#dcfce7,#bbf7d0);}
-.tb-am{background:linear-gradient(135deg,#fef3c7,#fde68a);}
-.tb-pu{background:linear-gradient(135deg,#ede9fe,#ddd6fe);}
-[data-theme=dark] .tb-bl{background:linear-gradient(135deg,#1e3a5f,#1e4080);}
-[data-theme=dark] .tb-gr{background:linear-gradient(135deg,#14532d,#166534);}
-[data-theme=dark] .tb-am{background:linear-gradient(135deg,#451a03,#78350f);}
-[data-theme=dark] .tb-pu{background:linear-gradient(135deg,#2e1065,#3b0764);}
-.cb{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;}
-.tag{display:inline-block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 9px;border-radius:999px;margin-bottom:8px;}
-.tbl{background:#dbeafe;color:#1d4ed8;}.tgr{background:#dcfce7;color:#15803d;}.tam{background:#fef3c7;color:#b45309;}.tpu{background:#ede9fe;color:#6d28d9;}
-[data-theme=dark] .tbl{background:#1e3a5f;color:#93c5fd;}[data-theme=dark] .tgr{background:#14532d;color:#86efac;}[data-theme=dark] .tam{background:#451a03;color:#fcd34d;}[data-theme=dark] .tpu{background:#2e1065;color:#c4b5fd;}
-.card h3{font-family:var(--fn);font-weight:900;font-size:1rem;margin-bottom:6px;line-height:1.25;}
-.card p{font-size:.82rem;color:var(--mu);line-height:1.6;flex:1;}
-.cf{margin-top:13px;display:flex;align-items:center;justify-content:space-between;}
-.pb{display:inline-flex;align-items:center;gap:5px;background:var(--pr);color:#fff;border-radius:9px;padding:7px 16px;font-size:.83rem;font-weight:700;font-family:var(--fn);transition:background .18s;}
-.pb:hover{background:var(--ph);}
-.df{font-size:.72rem;color:var(--mu);}
-.hg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:14px;}
-.hc{background:var(--s);border:1.5px solid var(--bd);border-radius:13px;padding:17px;display:flex;gap:12px;}
-.hn{width:30px;height:30px;border-radius:50%;background:var(--pr);color:#fff;font-family:var(--fn);font-weight:900;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.hc h4{font-family:var(--fn);font-weight:800;font-size:.88rem;margin-bottom:3px;}
-.hc p{font-size:.79rem;color:var(--mu);line-height:1.55;}
-footer{background:var(--s);border-top:1.5px solid var(--bd);padding:20px;text-align:center;font-size:.79rem;color:var(--mu);}
-footer a{color:var(--pr);}
-@media(max-width:520px){.hero{padding:32px 14px 24px;}.sec{padding:8px 14px 40px;}.hc{flex-direction:column;gap:8px;}.stats{gap:20px;}}
+.ni{max-width:1200px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo svg{flex-shrink:0;}
+.nav-brand{font-family:var(--fn);font-weight:900;font-size:1.25rem;color:var(--pr);}
+.tt{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:1.1rem;transition:background .15s;}
+.tt:hover{background:var(--s2);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;
+  min-height:380px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,.35)),
+    linear-gradient(135deg,#1a237e 0%,#4361ee 50%,#7b2ff7 100%);
+  overflow:hidden;
+  padding:40px 20px;
+}
+/* animated floating shapes */
+.hero-shape{position:absolute;border-radius:50%;opacity:.18;animation:floatShape 8s ease-in-out infinite;}
+.hs1{width:300px;height:300px;background:#fff;top:-80px;left:-60px;animation-delay:0s;}
+.hs2{width:180px;height:180px;background:#ffe066;bottom:-40px;right:10%;animation-delay:-3s;}
+.hs3{width:120px;height:120px;background:#4ade80;top:30%;right:-30px;animation-delay:-5s;}
+@keyframes floatShape{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-18px) scale(1.06);}}
+
+.hero-content{position:relative;z-index:1;text-align:center;max-width:680px;}
+.hero-tag{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-family:var(--fn);font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:16px;border:1px solid rgba(255,255,255,.3);}
+.hero-title{font-family:var(--fn);font-weight:900;font-size:clamp(2.2rem,6vw,3.6rem);color:#fff;line-height:1.1;margin-bottom:14px;}
+.hero-title span{color:#ffe066;}
+.hero-sub{color:rgba(255,255,255,.88);font-size:clamp(.95rem,2vw,1.15rem);margin-bottom:8px;font-weight:500;}
+.hero-note{color:rgba(255,255,255,.65);font-size:.88rem;margin-bottom:28px;}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#ffe066;color:#1a1d3c;border-radius:999px;font-family:var(--fn);font-weight:900;font-size:1rem;box-shadow:0 6px 20px rgba(255,224,102,.4);transition:transform .18s,box-shadow .18s;}
+.hero-cta:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(255,224,102,.5);}
+.hero-cta svg{transition:transform .18s;}
+.hero-cta:hover svg{transform:translateX(3px);}
+
+/* ── MAIN WRAP ── */
+.wrap{max-width:1200px;margin:0 auto;padding:40px 20px 70px;}
+
+/* ── SECTION HEADER ── */
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.sec-head h2{font-family:var(--fn);font-weight:900;font-size:1.25rem;}
+.sec-line{flex:1;height:2px;background:var(--bd);border-radius:999px;}
+.sec-badge{background:var(--pr);color:#fff;font-family:var(--fn);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:999px;}
+
+/* ── GAME GRID ── */
+.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px;}
+@media(max-width:860px){.game-grid{grid-template-columns:repeat(2,1fr);gap:16px;}}
+@media(max-width:540px){.game-grid{grid-template-columns:1fr;gap:14px;}}
+
+/* ── GAME CARD ── */
+.game-card{
+  position:relative;
+  border-radius:22px;
+  overflow:hidden;
+  border:4px solid #000;
+  box-shadow:var(--card-sh);
+  aspect-ratio:4/3;
+  transition:transform .22s,box-shadow .22s;
+  display:block;
+  background:var(--s2);
+}
+.game-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 0 55px rgba(0,0,0,.7);}
+.game-card img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* placeholder when no image */
+.game-card-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:10px;
+  background:linear-gradient(135deg,var(--s2),var(--bd));
+  padding:20px;text-align:center;
+}
+.gcp-emoji{font-size:52px;}
+.gcp-label{font-family:var(--fn);font-weight:900;font-size:1rem;color:var(--tx);}
+.gcp-desc{font-size:.78rem;color:var(--mu);}
+
+/* hover overlay */
+.game-card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.1) 55%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:18px 16px;
+  opacity:0;transition:opacity .22s;
+}
+.game-card:hover .game-card-overlay{opacity:1;}
+.gco-title{font-family:var(--fn);font-weight:900;color:#fff;font-size:1rem;margin-bottom:4px;}
+.gco-play{display:inline-flex;align-items:center;gap:6px;background:#ffe066;color:#1a1d3c;padding:6px 14px;border-radius:999px;font-family:var(--fn);font-weight:800;font-size:.82rem;}
+
+/* ── STATS STRIP ── */
+.stats-strip{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0 40px;padding:22px;background:var(--s);border-radius:16px;border:2px solid var(--bd);box-shadow:var(--sh);}
+.stat-item{text-align:center;padding:8px 20px;}
+.stat-num{font-family:var(--fn);font-weight:900;font-size:2rem;color:var(--pr);}
+.stat-lbl{font-size:.78rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ── FOOTER ── */
+footer{background:var(--s);border-top:2px solid var(--bd);padding:20px;text-align:center;font-size:.82rem;color:var(--mu);}
+footer strong{color:var(--pr);font-family:var(--fn);}
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
   <div class="ni">
-    <div class="logo">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-label="MEDACO Games logo">
-        <rect width="34" height="34" rx="9" fill="#0077cc"/>
-        <rect x="15" y="5" width="4" height="24" rx="2" fill="white"/>
-        <rect x="5" y="15" width="24" height="4" rx="2" fill="white"/>
-        <circle cx="25" cy="9" r="3.5" fill="#ff6b35"/>
+    <div class="nav-logo">
+      <!-- SVG Logo -->
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-label="MEDACO Games logo">
+        <rect width="36" height="36" rx="10" fill="#4361ee"/>
+        <text x="18" y="25" font-family="Nunito,sans-serif" font-weight="900" font-size="18" fill="white" text-anchor="middle">M</text>
+        <circle cx="28" cy="10" r="5" fill="#ffe066"/>
+        <circle cx="28" cy="10" r="2.5" fill="#4361ee"/>
       </svg>
-      MEDACO <span class="logo-accent">Games</span>
+      <span class="nav-brand">MEDACO Games</span>
     </div>
-    <button class="tt" data-theme-toggle aria-label="Toggle dark mode">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+    <button class="tt" data-theme-toggle aria-label="Toggle dark mode">◐</button>
   </div>
 </nav>
-<main>
-  <section class="hero">
-    <div class="badge">&#11088; Free &middot; No login &middot; Play instantly</div>
-    <h1>Learning about <em>medicines</em><br>has never been this fun</h1>
-    <p>MEDACO Games helps children, young people, and families explore how medicines work &mdash; through interactive puzzles, quizzes, and challenges.</p>
-    <div class="stats">
-      <div><div class="stn">4</div><div class="stl">Games</div></div>
-      <div><div class="stn">0</div><div class="stl">Logins needed</div></div>
-      <div><div class="stn">&#8734;</div><div class="stl">Replays</div></div>
-    </div>
-  </section>
 
-  <section class="sec">
-    <h2 class="sh">All Games</h2>
-    <p class="ss">Pick a game and start playing &mdash; works on any device, no download needed.</p>
-    <div class="grid">
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-shape hs1"></div>
+  <div class="hero-shape hs2"></div>
+  <div class="hero-shape hs3"></div>
+  <div class="hero-content">
+    <div class="hero-tag">🎮 MEDACO Games Zone</div>
+    <h1 class="hero-title">Play &amp; <span>Enjoy</span></h1>
+    <p class="hero-sub">Discover Exciting Games for all children ages 5–13 years</p>
+    <p class="hero-note">Accessible versions of games and puzzles</p>
+    <a href="#games" class="hero-cta">
+      Explore All Games
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
 
-      <!-- ✅ UPDATED: Forest Kids Memory Match -->
-      <a href="games/memory-match/index.html" class="card">
-        <div class="thumb tb-gr">🌲</div>
-        <div class="cb">
-          <span class="tag tgr">Memory</span>
-          <h3>Forest Kids: Medicine Memory Match</h3>
-          <p>Flip cards to match each medicine with its description. Progress through Easy, Medium, and Hard levels — with sounds, star ratings, and custom card management.</p>
-          <div class="cf">
-            <span class="pb">&#9654; Play</span>
-            <span class="df">&#9733;&#9734;&#9734; Easy start</span>
-          </div>
-        </div>
-      </a>
+<!-- MAIN -->
+<div class="wrap" id="games">
 
-      <a href="games/quiz/index.html" class="card">
-        <div class="thumb tb-bl">&#129504;</div>
-        <div class="cb">
-          <span class="tag tbl">Quiz</span>
-          <h3>Medicine Quiz</h3>
-          <p>Answer questions about how medicines are taken, stored, and why they come in different forms. Score points for every correct answer.</p>
-          <div class="cf">
-            <span class="pb">&#9654; Play</span>
-            <span class="df">&#9733;&#9733;&#9734; Medium</span>
-          </div>
-        </div>
-      </a>
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-item"><div class="stat-num">9</div><div class="stat-lbl">Games</div></div>
+    <div class="stat-item"><div class="stat-num">5–13</div><div class="stat-lbl">Age Range</div></div>
+    <div class="stat-item"><div class="stat-num">♿</div><div class="stat-lbl">Accessible</div></div>
+    <div class="stat-item"><div class="stat-num">🆓</div><div class="stat-lbl">Free to Play</div></div>
+  </div>
 
-      <a href="games/wordsearch/index.html" class="card">
-        <div class="thumb tb-am">&#128269;</div>
-        <div class="cb">
-          <span class="tag tam">Word Search</span>
-          <h3>Medicine Word Hunt</h3>
-          <p>Find hidden medicine words in the letter grid. Each word you find reveals a fun fact about that medicine.</p>
-          <div class="cf">
-            <span class="pb">&#9654; Play</span>
-            <span class="df">&#9733;&#9734;&#9734; Easy</span>
-          </div>
-        </div>
-      </a>
+  <!-- ROW 1 -->
+  <div class="sec-head">
+    <h2>🧩 Puzzles</h2>
+    <div class="sec-line"></div>
+    <span class="sec-badge">3 games</span>
+  </div>
+  <div class="game-grid">
 
-      <a href="games/sorting/index.html" class="card">
-        <div class="thumb tb-pu">&#128194;</div>
-        <div class="cb">
-          <span class="tag tpu">Sorting</span>
-          <h3>Sort the Medicine</h3>
-          <p>Drag medicines into the right category &mdash; liquid, tablet, capsule, or patch. Learn why different forms exist for different patients.</p>
-          <div class="cf">
-            <span class="pb">&#9654; Play</span>
-            <span class="df">&#9733;&#9733;&#9734; Medium</span>
-          </div>
-        </div>
-      </a>
+    <a class="game-card" href="games/maze/index.html">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🧩</div>
+        <div class="gcp-label">Jigsaw Puzzles</div>
+        <div class="gcp-desc">Piece together fun images</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Jigsaw Puzzles</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
 
-    </div>
-  </section>
+    <a class="game-card" href="games/maze/index.html">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🔤</div>
+        <div class="gcp-label">Word Search</div>
+        <div class="gcp-desc">Find hidden words in the grid</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Word Search</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
 
-  <section class="sec">
-    <h2 class="sh">How to play</h2>
-    <p class="ss">Getting started takes seconds &mdash; no account, no download needed.</p>
-    <div class="hg">
-      <div class="hc"><div class="hn">1</div><div><h4>Pick a game</h4><p>Choose any game above. Each one covers a different aspect of medicines.</p></div></div>
-      <div class="hc"><div class="hn">2</div><div><h4>Read the instructions</h4><p>A short guide appears at the start. You can re-read it any time during the game.</p></div></div>
-      <div class="hc"><div class="hn">3</div><div><h4>Play at your pace</h4><p>No time pressure unless you choose it. Play as slowly as you like.</p></div></div>
-      <div class="hc"><div class="hn">4</div><div><h4>See your score</h4><p>Your score appears at the end. Try again &mdash; every replay shuffles fresh.</p></div></div>
-    </div>
-  </section>
-</main>
+    <a class="game-card" href="games/maze/index.html">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🦁</div>
+        <div class="gcp-label">Maze Hunter</div>
+        <div class="gcp-desc">Help Leo reach Zara!</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Maze Hunter</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ROW 2 -->
+  <div class="sec-head">
+    <h2>🎨 Creative &amp; Action</h2>
+    <div class="sec-line"></div>
+    <span class="sec-badge">3 games</span>
+  </div>
+  <div class="game-grid">
+
+    <a class="game-card" href="#">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🎨</div>
+        <div class="gcp-label">Colouring</div>
+        <div class="gcp-desc">Colour in your favourite scenes</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Colouring</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="#">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">⚽</div>
+        <div class="gcp-label">Tilt Maze</div>
+        <div class="gcp-desc">Tilt your way to the exit</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Tilt Maze</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="#">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🐸</div>
+        <div class="gcp-label">Froggy Jump</div>
+        <div class="gcp-desc">Jump across the lily pads!</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Froggy Jump</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ROW 3 -->
+  <div class="sec-head">
+    <h2>🃏 Memory &amp; Matching</h2>
+    <div class="sec-line"></div>
+    <span class="sec-badge">3 games</span>
+  </div>
+  <div class="game-grid">
+
+    <a class="game-card" href="games/memory/index.html">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🌲</div>
+        <div class="gcp-label">Memory Match</div>
+        <div class="gcp-desc">Forest Friends memory game</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Memory Match</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="games/matching/index.html">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🎯</div>
+        <div class="gcp-label">Custom Matching Cards</div>
+        <div class="gcp-desc">Match pairs across 3 levels</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Custom Matching Cards</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="#">
+      <div class="game-card-placeholder">
+        <div class="gcp-emoji">🧩</div>
+        <div class="gcp-label">Jigsaw Random</div>
+        <div class="gcp-desc">Surprise puzzle every time!</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Jigsaw Random</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+  </div>
+
+</div><!-- /wrap -->
 
 <footer>
-  <p>MEDACO Games &middot; Part of the MEDACO research study &middot;
-  <a href="https://www.manchester.ac.uk" target="_blank" rel="noopener noreferrer">University of Manchester</a></p>
+  <strong>MEDACO Games</strong> · Accessible games for children aged 5–13 · Made with ❤️ for young learners
 </footer>
 
 <script>
 (function(){
-  var t=document.querySelector("[data-theme-toggle]"),r=document.documentElement;
-  var d=matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";
-  r.setAttribute("data-theme",d);
-  if(t) t.addEventListener("click",function(){
-    d=d==="dark"?"light":"dark";
-    r.setAttribute("data-theme",d);
+  const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  t&&t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+    t.textContent=d==='dark'?'☀️':'◐';
   });
 })();
 </script>

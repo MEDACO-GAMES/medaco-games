@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Friends Memory Game — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f0fdf4;--s:#fff;--s2:#dcfce7;--bd:#bbf7d0;
+  --tx:#14291e;--mu:#3d7a55;--pr:#16a34a;--ph:#15803d;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 10px rgba(20,100,50,.1);--sh2:0 8px 28px rgba(20,100,50,.18);
+  --card-back:linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+  --card-flip:#fff;--card-match:#bbf7d0;
+}
+[data-theme=dark]{
+  --bg:#071510;--s:#0d1f17;--s2:#122a1e;--bd:#1a4030;
+  --tx:#c6f6d5;--mu:#6abf8a;--pr:#4ade80;--ph:#22c55e;
+  --sh:0 2px 10px rgba(0,0,0,.35);--sh2:0 8px 28px rgba(0,0,0,.5);
+  --card-back:linear-gradient(135deg,#166534 0%,#14532d 100%);
+  --card-flip:#0d1f17;--card-match:#14532d;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+img{display:block;max-width:100%;height:auto;}
+
+/* NAV */
+nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
+.ni{max-width:1000px;margin:0 auto;padding:0 18px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nav-title{font-family:var(--fn);font-weight:900;font-size:1rem;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);transition:background .15s;}
+.tt:hover{background:var(--s2);color:var(--pr);}
+.snd-btn{padding:7px 14px;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.82rem;background:#27ae60;color:#fff;transition:background .15s;}
+.snd-btn.off{background:#95a5a6;}
+
+/* WRAP */
+.wrap{max-width:1000px;margin:0 auto;padding:26px 16px 60px;}
+
+/* PAGE TITLE */
+.page-title{text-align:center;margin-bottom:24px;}
+.page-title h1{font-family:var(--fn);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);margin-bottom:6px;}
+.page-title p{color:var(--mu);font-size:.92rem;max-width:55ch;margin:0 auto;}
+
+/* LEVEL SCREEN */
+#level-screen{background:var(--s);border:2px solid var(--bd);border-radius:16px;padding:28px;text-align:center;box-shadow:var(--sh);}
+#level-screen h3{font-family:var(--fn);font-weight:900;font-size:1.2rem;margin-bottom:20px;color:var(--mu);}
+.level-grid{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.level-btn{padding:20px 28px;border-radius:14px;min-width:170px;color:#fff;box-shadow:var(--sh2);transition:transform .18s,box-shadow .18s;font-family:var(--fn);}
+.level-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.22);}
+.level-btn strong{display:block;font-size:1.1rem;font-weight:900;margin-bottom:6px;}
+.level-btn span{font-size:.82rem;opacity:.9;}
+.lv-easy{background:linear-gradient(135deg,#4ade80,#16a34a);}
+.lv-medium{background:linear-gradient(135deg,#fbbf24,#d97706);}
+.lv-hard{background:linear-gradient(135deg,#f87171,#dc2626);}
+
+/* GAME SCREEN */
+#game-screen{display:none;}
+.stats-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;justify-content:center;}
+.stat{padding:10px 18px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.88rem;color:#fff;}
+.st-time{background:#3498db;transition:background .3s;}
+.st-time.urgent{background:#e74c3c;}
+.st-moves{background:#9b59b6;}
+.st-matched{background:#27ae60;}
+.st-level{background:#e74c3c;}
+
+/* BOARD */
+#game-board{display:grid;gap:12px;margin:16px auto;justify-content:center;}
+
+/* CARDS */
+.memory-card{
+  background:var(--card-back);
+  border-radius:13px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  padding:14px 10px;
+  min-height:110px;
+  box-shadow:var(--sh);
+  transition:transform .25s,box-shadow .25s,background .25s;
+  user-select:none;-webkit-user-select:none;
+  position:relative;overflow:hidden;
+}
+.memory-card:hover:not(.matched):not(.flipped){transform:translateY(-4px);box-shadow:var(--sh2);}
+.memory-card.flipped{background:var(--card-flip);border:2.5px solid var(--pr);}
+.memory-card.matched{background:var(--card-match);border:2.5px solid var(--pr);cursor:default;opacity:.8;}
+.memory-card.matched:hover{transform:none;}
+.memory-card.wrong{animation:shake .45s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+
+.card-back{font-size:44px;display:flex;align-items:center;justify-content:center;}
+.card-front{display:none;text-align:center;line-height:1.4;}
+.card-front .cf-emoji{font-size:34px;margin-bottom:7px;}
+.card-front .cf-text{font-family:var(--fn);font-weight:800;font-size:.85rem;color:var(--tx);}
+.memory-card.flipped .card-back{display:none;}
+.memory-card.flipped .card-front{display:block;}
+.memory-card.matched .card-back{display:none;}
+.memory-card.matched .card-front{display:block;}
+
+@media(max-width:560px){
+  .memory-card{min-height:90px;padding:10px 8px;}
+  .card-back{font-size:32px;}
+  .card-front .cf-emoji{font-size:26px;}
+  .card-front .cf-text{font-size:.78rem;}
+}
+
+/* CONTROLS */
+.game-controls{text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-back{padding:11px 22px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-restart{padding:11px 22px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-back:hover{background:#7f8c8d;}.btn-restart:hover{background:#2980b9;}
+
+/* PROGRESS BAR */
+.progress-wrap{margin-bottom:14px;}
+.progress-label{font-family:var(--fn);font-weight:700;font-size:.8rem;color:var(--mu);margin-bottom:4px;}
+.progress-track{height:10px;background:var(--bd);border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--pr);border-radius:999px;transition:width .4s;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;justify-content:center;align-items:center;padding:16px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--s);padding:36px 28px;border-radius:18px;text-align:center;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.mod-emoji{font-size:72px;margin-bottom:12px;}
+.mod-title{font-family:var(--fn);font-weight:900;font-size:1.7rem;margin-bottom:8px;}
+.mod-stars{font-size:42px;margin:12px 0;}
+.mod-stats{font-size:.9rem;line-height:2.2;color:var(--mu);margin-bottom:22px;}
+.mod-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-choose{padding:13px 22px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.88rem;}
+.btn-again{padding:13px 22px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.88rem;}
+.btn-next{padding:13px 22px;background:#27ae60;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.88rem;display:none;}
+.btn-choose:hover{background:#7f8c8d;}.btn-again:hover{background:#2980b9;}.btn-next:hover{background:#219a52;}
+
+/* STAR ANIMATION */
+@keyframes popIn{0%{transform:scale(0) rotate(-30deg);opacity:0;}60%{transform:scale(1.3) rotate(8deg);}100%{transform:scale(1) rotate(0);opacity:1;}}
+.star-anim{display:inline-block;animation:popIn .4s ease forwards;animation-fill-mode:both;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="ni">
+    <a href="../../index.html" class="back">&#8592; All Games</a>
+    <span class="nav-title">🌲 Forest Friends Memory</span>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="snd-btn" id="snd-btn" onclick="toggleSound()">🔊 Sound: ON</button>
+      <button class="tt" data-theme-toggle aria-label="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <h1>🌲 Forest Friends Memory Game</h1>
+    <p>Match each forest animal with its description. Flip two cards to find pairs!</p>
+  </div>
+
+  <!-- LEVEL SCREEN -->
+  <div id="level-screen">
+    <h3>Choose Your Level</h3>
+    <div id="best-scores" style="margin-bottom:18px;font-size:.85rem;color:var(--mu);font-family:var(--fn);font-weight:700;"></div>
+    <div class="level-grid">
+      <button class="level-btn lv-easy" onclick="startGame('easy')">
+        <strong>🟢 Easy</strong>
+        <span>4 pairs · 60 seconds</span>
+      </button>
+      <button class="level-btn lv-medium" onclick="startGame('medium')">
+        <strong>🟡 Medium</strong>
+        <span>6 pairs · 90 seconds</span>
+      </button>
+      <button class="level-btn lv-hard" onclick="startGame('hard')">
+        <strong>🔴 Hard</strong>
+        <span>8 pairs · 120 seconds</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen">
+
+    <div class="stats-bar">
+      <div class="stat st-level">🌲 Level: <span id="lbl-level">Easy</span></div>
+      <div class="stat st-time" id="stat-timer">⏱️ <span id="lbl-timer">60</span>s</div>
+      <div class="stat st-moves">🎯 Moves: <span id="lbl-moves">0</span></div>
+      <div class="stat st-matched">✓ <span id="lbl-matched">0</span> / <span id="lbl-total">4</span></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label" id="prog-label">Progress: 0 / 4 matched</div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    <div id="game-board"></div>
+
+    <div class="game-controls">
+      <button class="btn-back" onclick="backToLevels()">← Back to Levels</button>
+      <button class="btn-restart" onclick="restartGame()">🔄 Restart Level</button>
+    </div>
+
+  </div>
+</div><!-- /wrap -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="mod-emoji" id="mod-emoji">🎉</div>
+    <div class="mod-title" id="mod-title">You Won!</div>
+    <div class="mod-stars" id="mod-stars"></div>
+    <div class="mod-stats" id="mod-stats"></div>
+    <div class="mod-btns">
+      <button class="btn-choose" onclick="backToLevels()">Choose Level</button>
+      <button class="btn-again" onclick="restartGame()">Play Again</button>
+      <button class="btn-next" id="btn-next">Next Level →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  /* ── DARK MODE ── */
+  (function(){
+    const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+    let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    r.setAttribute('data-theme',d);
+    t&&t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);});
+  })();
+
+  /* ── SOUND ── */
+  let audioCtx=null,soundOn=true;
+  function ctx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+  function tone(freq,type,vol,dur,when){
+    try{
+      const o=ctx().createOscillator(),g=ctx().createGain();
+      o.connect(g);g.connect(ctx().destination);
+      o.frequency.value=freq;o.type=type;
+      const s=when||ctx().currentTime;
+      g.gain.setValueAtTime(vol,s);
+      g.gain.exponentialRampToValueAtTime(0.001,s+dur);
+      o.start(s);o.stop(s+dur+.01);
+    }catch(e){}
+  }
+  function sFlip(){if(!soundOn)return;tone(700,'sine',.15,.08);}
+  function sMatch(){if(!soundOn)return;[523,659,784].forEach((f,i)=>tone(f,'sine',.2,.3,ctx().currentTime+i*.09));}
+  function sWrong(){if(!soundOn)return;tone(220,'sawtooth',.18,.2);}
+  function sWin(){if(!soundOn)return;[523,587,659,784,1047].forEach((f,i)=>tone(f,'triangle',.22,.4,ctx().currentTime+i*.14));}
+  function sLose(){if(!soundOn)return;[400,350,300,250].forEach((f,i)=>tone(f,'sawtooth',.14,.3,ctx().currentTime+i*.14));}
+  function sClick(){if(!soundOn)return;tone(1100,'sine',.1,.06);}
+
+  window.toggleSound=function(){
+    soundOn=!soundOn;
+    const b=document.getElementById('snd-btn');
+    b.textContent=soundOn?'🔊 Sound: ON':'🔇 Sound: OFF';
+    b.className=soundOn?'snd-btn':'snd-btn off';
+    if(soundOn)sClick();
+  };
+
+  /* ── DATA ── */
+  const ALL_PAIRS=[
+    {name:'Owl',      description:'Nocturnal bird of prey',             emoji:'🦉'},
+    {name:'Rabbit',   description:'Swift herbivore that hops',          emoji:'🐰'},
+    {name:'Bear',     description:'Large omnivore of the forest',       emoji:'🐻'},
+    {name:'Wolf',     description:'Pack-living canid predator',         emoji:'🐺'},
+    {name:'Squirrel', description:'Nut-hoarding tree-dweller',          emoji:'🐿️'},
+    {name:'Deer',     description:'Graceful forest dweller with antlers',emoji:'🦌'},
+    {name:'Fox',      description:'Clever woodland hunter',             emoji:'🦊'},
+    {name:'Hedgehog', description:'Spiny insect-eater in undergrowth',  emoji:'🦔'}
+  ];
+
+  const LEVELS={
+    easy:  {pairs:4,time:60, cols:4},
+    medium:{pairs:6,time:90, cols:4},
+    hard:  {pairs:8,time:120,cols:4}
+  };
+
+  /* ── STATE ── */
+  let curLevel='easy',cards=[],flipped=[],matched=0,moves=0,timeLeft=0,timer=null,canFlip=true;
+  let bestScores={};
+
+  /* ── HELPERS ── */
+  function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+  function calcStars(level,movesUsed,timeUsed){
+    const cfg=LEVELS[level];
+    const eff=movesUsed/cfg.pairs;
+    const timeRatio=timeUsed/cfg.time;
+    if(eff<=1.4&&timeRatio<=0.65)return 3;
+    if(eff<=2.2)return 2;
+    return 1;
+  }
+  function starsHtml(n){
+    return Array.from({length:3},(_,i)=>`<span class="star-anim" style="animation-delay:${i*.12}s">${i<n?'⭐':'☆'}</span>`).join('');
+  }
+
+  /* ── BEST SCORES ── */
+  function loadBest(){
+    try{const d=sessionStorage.getItem('memoryBest');if(d)bestScores=JSON.parse(d);}catch(e){}
+  }
+  function saveBest(){
+    try{sessionStorage.setItem('memoryBest',JSON.stringify(bestScores));}catch(e){}
+  }
+  function renderBestScores(){
+    const el=document.getElementById('best-scores');
+    const parts=Object.entries(bestScores).map(([l,s])=>`${l.charAt(0).toUpperCase()+l.slice(1)}: ${'⭐'.repeat(s)}`);
+    el.textContent=parts.length?'Best: '+parts.join(' · '):'';
+  }
+  loadBest();
+
+  /* ── START ── */
+  window.startGame=function(level){
+    sClick();
+    curLevel=level;
+    const cfg=LEVELS[level];
+    matched=0;moves=0;flipped=[];timeLeft=cfg.time;canFlip=true;
+    if(timer)clearInterval(timer);
+
+    document.getElementById('level-screen').style.display='none';
+    document.getElementById('game-screen').style.display='block';
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('lbl-level').textContent=level.charAt(0).toUpperCase()+level.slice(1);
+    document.getElementById('lbl-total').textContent=cfg.pairs;
+    document.getElementById('lbl-matched').textContent='0';
+    document.getElementById('lbl-moves').textContent='0';
+    document.getElementById('lbl-timer').textContent=timeLeft;
+    document.getElementById('stat-timer').classList.remove('urgent');
+    updateProgress(0,cfg.pairs);
+
+    const sel=ALL_PAIRS.slice(0,cfg.pairs);
+    const raw=[];
+    sel.forEach((p,pid)=>{
+      raw.push({pairId:pid,kind:'animal',emoji:p.emoji,text:p.name});
+      raw.push({pairId:pid,kind:'desc',emoji:'📋',text:p.description});
+    });
+    cards=shuffle(raw);
+
+    const board=document.getElementById('game-board');
+    board.innerHTML='';
+    board.style.gridTemplateColumns=`repeat(${cfg.cols},minmax(0,1fr))`;
+    board.style.maxWidth=cfg.cols===4?'600px':'780px';
+    board.style.margin='16px auto';
+
+    cards.forEach((cd,idx)=>{
+      const el=document.createElement('div');
+      el.className='memory-card';
+      el.innerHTML=`<div class="card-back">🌲</div><div class="card-front"><div class="cf-emoji">${cd.emoji}</div><div class="cf-text">${cd.text}</div></div>`;
+      el.addEventListener('click',()=>flipCard(el,idx));
+      board.appendChild(el);
+    });
+
+    startTimer();
+  };
+
+  /* ── FLIP ── */
+  function flipCard(el,idx){
+    if(!canFlip||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+    sFlip();
+    el.classList.add('flipped');
+    flipped.push({el,idx});
+    if(flipped.length===2){
+      canFlip=false;
+      moves++;
+      document.getElementById('lbl-moves').textContent=moves;
+      setTimeout(checkMatch,750);
+    }
+  }
+
+  function checkMatch(){
+    const[a,b]=flipped;
+    if(cards[a.idx].pairId===cards[b.idx].pairId){
+      sMatch();
+      a.el.classList.add('matched');
+      b.el.classList.add('matched');
+      matched++;
+      document.getElementById('lbl-matched').textContent=matched;
+      updateProgress(matched,LEVELS[curLevel].pairs);
+      if(navigator.vibrate)navigator.vibrate([50,30,50]);
+      if(matched===LEVELS[curLevel].pairs)setTimeout(()=>endGame(true),500);
+    } else {
+      sWrong();
+      a.el.classList.add('wrong');b.el.classList.add('wrong');
+      if(navigator.vibrate)navigator.vibrate(80);
+      setTimeout(()=>{
+        a.el.classList.remove('flipped','wrong');
+        b.el.classList.remove('flipped','wrong');
+      },500);
+    }
+    flipped=[];canFlip=true;
+  }
+
+  function updateProgress(n,total){
+    const pct=total>0?Math.round((n/total)*100):0;
+    document.getElementById('prog-fill').style.width=pct+'%';
+    document.getElementById('prog-label').textContent=`Progress: ${n} / ${total} matched`;
+  }
+
+  /* ── TIMER ── */
+  function startTimer(){
+    if(timer)clearInterval(timer);
+    timer=setInterval(()=>{
+      timeLeft--;
+      document.getElementById('lbl-timer').textContent=timeLeft;
+      if(timeLeft<=10)document.getElementById('stat-timer').classList.add('urgent');
+      if(timeLeft<=0){clearInterval(timer);endGame(false);}
+    },1000);
+  }
+
+  /* ── END GAME ── */
+  function endGame(won){
+    clearInterval(timer);canFlip=false;
+    const cfg=LEVELS[curLevel];
+    if(won){
+      sWin();
+      const timeUsed=cfg.time-timeLeft;
+      const stars=calcStars(curLevel,moves,timeUsed);
+      bestScores[curLevel]=Math.max(bestScores[curLevel]||0,stars);
+      saveBest();
+
+      document.getElementById('mod-emoji').textContent='🎉';
+      document.getElementById('mod-title').textContent='You Won!';
+      document.getElementById('mod-title').style.color='var(--pr)';
+      document.getElementById('mod-stars').innerHTML=starsHtml(stars);
+      document.getElementById('mod-stats').innerHTML=
+        `<div>⏱️ Time used: ${timeUsed}s</div>`+
+        `<div>🎯 Moves: ${moves}</div>`+
+        `<div>🌲 Level: ${curLevel.charAt(0).toUpperCase()+curLevel.slice(1)}</div>`;
+
+      const nb=document.getElementById('btn-next');
+      const nextMap={easy:'medium',medium:'hard'};
+      const nxt=nextMap[curLevel];
+      if(nxt){nb.style.display='inline-block';nb.onclick=()=>{sClick();document.getElementById('modal').classList.remove('show');startGame(nxt);};}
+      else nb.style.display='none';
+    } else {
+      sLose();
+      document.getElementById('mod-emoji').textContent='⏰';
+      document.getElementById('mod-title').textContent="Time's Up!";
+      document.getElementById('mod-title').style.color='#dc2626';
+      document.getElementById('mod-stars').innerHTML='';
+      document.getElementById('mod-stats').innerHTML=
+        `<div>✓ Matched: ${matched}/${cfg.pairs} pairs</div>`+
+        `<div>🎯 Moves: ${moves}</div>`+
+        `<div>Keep practising!</div>`;
+      document.getElementById('btn-next').style.display='none';
+    }
+    document.getElementById('modal').classList.add('show');
+  }
+
+  window.backToLevels=function(){
+    sClick();clearInterval(timer);
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('game-screen').style.display='none';
+    document.getElementById('level-screen').style.display='block';
+    renderBestScores();
+  };
+  window.restartGame=function(){
+    sClick();
+    document.getElementById('modal').classList.remove('show');
+    startGame(curLevel);
+  };
+
+  renderBestScores();
+})();
+</script>
+</body>
+</html>
