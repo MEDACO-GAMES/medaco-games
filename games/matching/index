@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicine Match — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f0f7ff;--s:#fff;--s2:#e8f4fd;--bd:#c8e0f5;
+  --tx:#1a2b3c;--mu:#4a6580;--pr:#0077cc;--ph:#005fa3;
+  --ok:#15803d;--ok2:#dcfce7;--cb:#0077cc;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 8px rgba(0,80,160,.1);
+}
+[data-theme=dark]{
+  --bg:#0d1b2a;--s:#112233;--s2:#163047;--bd:#1e3a55;
+  --tx:#d6eaf8;--mu:#7aadcc;--pr:#4faad8;--ph:#6bbfe0;
+  --ok:#34d468;--ok2:#14532d;--cb:#1d5986;
+  --sh:0 2px 8px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+
+nav{background:var(--s);border-bottom:2px solid var(--bd);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nt{font-family:var(--fn);font-weight:800;font-size:1rem;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);}
+.tt:hover{background:var(--s2);}
+
+.wrap{max-width:660px;margin:0 auto;padding:24px 16px 52px;}
+.gh{text-align:center;margin-bottom:20px;}
+.gh h1{font-family:var(--fn);font-weight:900;font-size:1.55rem;margin-bottom:6px;}
+.gh p{color:var(--mu);font-size:.88rem;}
+
+.info{background:var(--s);border:1.5px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:.83rem;color:var(--mu);margin-bottom:16px;line-height:1.65;}
+.info strong{color:var(--tx);}
+
+.sts{display:flex;justify-content:center;gap:20px;margin-bottom:20px;}
+.st{background:var(--s);border:1.5px solid var(--bd);border-radius:10px;padding:8px 20px;text-align:center;}
+.stl{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:700;}
+.stv{font-family:var(--fn);font-weight:900;font-size:1.2rem;color:var(--pr);}
+
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+@media(max-width:440px){.board{grid-template-columns:repeat(3,1fr);gap:8px;}}
+@media(max-width:340px){.board{grid-template-columns:repeat(3,1fr);gap:6px;}}
+
+.card{aspect-ratio:3/4;cursor:pointer;perspective:600px;}
+.ci{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.16,1,.3,1);}
+.card.flipped .ci,.card.matched .ci{transform:rotateY(180deg);}
+.cfront,.cback{position:absolute;inset:0;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--bd);}
+.cback{background:var(--cb);}
+.cfront{background:var(--s);transform:rotateY(180deg);padding:8px;text-align:center;}
+.cfront .em{font-size:1.7rem;margin-bottom:4px;line-height:1;}
+.cfront .lb{font-family:var(--fn);font-weight:700;font-size:.7rem;line-height:1.3;color:var(--tx);}
+.card.matched .cfront{border-color:var(--ok);background:var(--ok2);}
+.card.matched .cfront .lb{color:var(--ok);}
+
+.rbtn{display:flex;justify-content:center;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;font-family:var(--fn);font-weight:800;font-size:.9rem;background:var(--pr);color:#fff;transition:background .15s;}
+.btn:hover{background:var(--ph);}
+.btn:active{transform:scale(.97);}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;}
+.ov.show{opacity:1;pointer-events:all;}
+.ob{background:var(--s);border-radius:20px;padding:38px 30px;text-align:center;max-width:320px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.ob .big{font-size:3rem;margin-bottom:12px;}
+.ob h2{font-family:var(--fn);font-weight:900;font-size:1.45rem;margin-bottom:8px;}
+.ob p{color:var(--mu);margin-bottom:22px;font-size:.88rem;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="back">&#8592; All Games</a>
+  <span class="nt">&#127183; Medicine Match</span>
+  <button class="tt" data-theme-toggle aria-label="Toggle dark mode">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<div class="wrap">
+  <div class="gh">
+    <h1>&#127183; Medicine Match</h1>
+    <p>Match each medicine to what it treats</p>
+  </div>
+
+  <div class="info">
+    <strong>How to play:</strong> Click any card to flip it over. Then click a second card to find its match. A medicine card pairs with its condition card. Find all 8 pairs to win!
+  </div>
+
+  <div class="sts">
+    <div class="st"><div class="stl">Moves</div><div class="stv" id="moves">0</div></div>
+    <div class="st"><div class="stl">Pairs found</div><div class="stv" id="pairs">0 / 8</div></div>
+  </div>
+
+  <div class="board" id="board" role="list" aria-label="Memory card board"></div>
+
+  <div class="rbtn">
+    <button class="btn" id="restart">&#128260; New Game</button>
+  </div>
+</div>
+
+<div class="ov" id="win-ov" role="dialog" aria-modal="true">
+  <div class="ob">
+    <div class="big">&#127881;</div>
+    <h2>Well done!</h2>
+    <p id="win-msg">You matched all 8 pairs!</p>
+    <button class="btn" id="again">&#9654; Play Again</button>
+  </div>
+</div>
+
+<script>
+var PAIRS = [
+  { med:"&#128138; Paracetamol",  cond:"&#127777; Fever & Pain",      id:"a" },
+  { med:"&#128138; Ibuprofen",    cond:"&#129463; Toothache",          id:"b" },
+  { med:"&#129518; Amoxicillin",  cond:"&#129440; Ear Infection",      id:"c" },
+  { med:"&#128137; Insulin",      cond:"&#127852; High Blood Sugar",   id:"d" },
+  { med:"&#127744; Salbutamol",   cond:"&#129516; Asthma Attack",      id:"e" },
+  { med:"&#128138; Loratadine",   cond:"&#127800; Hay Fever",          id:"f" },
+  { med:"&#129518; Omeprazole",   cond:"&#128148; Acid Reflux",        id:"g" },
+  { med:"&#128138; Methotrexate", cond:"&#129460; Arthritis",          id:"h" }
+];
+
+var flipped = [], matched = 0, moves = 0, locked = false;
+
+function shuffle(a) { return a.sort(function(){ return Math.random() - 0.5; }); }
+
+function init() {
+  flipped = []; matched = 0; moves = 0; locked = false;
+  document.getElementById("moves").textContent = "0";
+  document.getElementById("pairs").textContent = "0 / 8";
+  document.getElementById("win-ov").classList.remove("show");
+
+  var all = [];
+  PAIRS.forEach(function(p) {
+    all.push({ label: p.med, pid: p.id });
+    all.push({ label: p.cond, pid: p.id });
+  });
+  shuffle(all);
+
+  var board = document.getElementById("board");
+  board.innerHTML = "";
+
+  all.forEach(function(c) {
+    var parts = c.label.split(" ");
+    var em = parts[0];
+    var lb = parts.slice(1).join(" ");
+
+    var el = document.createElement("div");
+    el.className = "card";
+    el.setAttribute("role", "listitem");
+    el.dataset.pid = c.pid;
+    el.innerHTML =
+      '<div class="ci">' +
+        '<div class="cback">' +
+          '<svg width="28" height="28" viewBox="0 0 34 34" fill="none">' +
+            '<rect width="34" height="34" rx="8" fill="white" fill-opacity=".15"/>' +
+            '<rect x="15" y="5" width="4" height="24" rx="2" fill="white"/>' +
+            '<rect x="5" y="15" width="24" height="4" rx="2" fill="white"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div class="cfront">' +
+          '<div class="em">' + em + '</div>' +
+          '<div class="lb">' + lb + '</div>' +
+        '</div>' +
+      '</div>';
+
+    el.addEventListener("click", function(){ flip(el); });
+    board.appendChild(el);
+  });
+}
+
+function flip(el) {
+  if (locked || el.classList.contains("flipped") || el.classList.contains("matched")) return;
+  el.classList.add("flipped");
+  flipped.push(el);
+  if (flipped.length === 2) check();
+}
+
+function check() {
+  locked = true;
+  moves++;
+  document.getElementById("moves").textContent = moves;
+  var a = flipped[0], b = flipped[1];
+
+  if (a.dataset.pid === b.dataset.pid) {
+    a.classList.add("matched");
+    b.classList.add("matched");
+    matched++;
+    document.getElementById("pairs").textContent = matched + " / 8";
+    flipped = [];
+    locked = false;
+    if (matched === 8) {
+      setTimeout(function() {
+        document.getElementById("win-msg").textContent =
+          "You matched all 8 pairs in " + moves + " moves!";
+        document.getElementById("win-ov").classList.add("show");
+      }, 500);
+    }
+  } else {
+    setTimeout(function() {
+      a.classList.remove("flipped");
+      b.classList.remove("flipped");
+      flipped = [];
+      locked = false;
+    }, 1000);
+  }
+}
+
+document.getElementById("restart").addEventListener("click", init);
+document.getElementById("again").addEventListener("click", init);
+
+(function(){
+  var t = document.querySelector("[data-theme-toggle]"), r = document.documentElement;
+  var d = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+  r.setAttribute("data-theme", d);
+  if (t) t.addEventListener("click", function(){
+    d = d === "dark" ? "light" : "dark";
+    r.setAttribute("data-theme", d);
+  });
+})();
+
+init();
+</script>
+</body>
+</html>

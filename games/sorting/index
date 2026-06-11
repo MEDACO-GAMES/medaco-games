@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sort the Medicine — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f5f0ff;--s:#fff;--s2:#ede9fe;--bd:#ddd6fe;
+  --tx:#1e1040;--mu:#5b4b8a;--pr:#7c3aed;--ph:#6d28d9;
+  --ok:#15803d;--ok2:#dcfce7;--er:#be123c;--er2:#ffe4e6;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 8px rgba(80,40,160,.1);
+}
+[data-theme=dark]{
+  --bg:#0e0820;--s:#160d30;--s2:#1e1240;--bd:#2d1f5e;
+  --tx:#ede9fe;--mu:#a78bfa;--pr:#a78bfa;--ph:#c4b5fd;
+  --ok:#34d468;--ok2:#14532d;--er:#fb7185;--er2:#4c0519;
+  --sh:0 2px 8px rgba(0,0,0,.35);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+
+nav{background:var(--s);border-bottom:2px solid var(--bd);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nt{font-family:var(--fn);font-weight:800;font-size:1rem;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);}
+.tt:hover{background:var(--s2);}
+
+.wrap{max-width:700px;margin:0 auto;padding:24px 16px 56px;}
+.gh{text-align:center;margin-bottom:18px;}
+.gh h1{font-family:var(--fn);font-weight:900;font-size:1.5rem;margin-bottom:5px;}
+.gh p{color:var(--mu);font-size:.87rem;}
+
+.info{background:var(--s);border:1.5px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:.83rem;color:var(--mu);margin-bottom:18px;line-height:1.65;}
+.info strong{color:var(--tx);}
+
+/* SCORE ROW */
+.srow{display:flex;justify-content:center;gap:18px;margin-bottom:20px;}
+.st{background:var(--s);border:1.5px solid var(--bd);border-radius:10px;padding:7px 18px;text-align:center;min-width:80px;}
+.stl{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);font-weight:700;}
+.stv{font-family:var(--fn);font-weight:900;font-size:1.15rem;color:var(--pr);}
+
+/* CARD TO SORT */
+.card-area{display:flex;justify-content:center;margin-bottom:22px;min-height:110px;align-items:center;}
+.medicine-card{
+  background:var(--s);border:2px solid var(--bd);border-radius:16px;
+  padding:18px 28px;text-align:center;box-shadow:var(--sh);
+  transition:transform .15s,box-shadow .15s;max-width:260px;width:100%;
+}
+.medicine-card .em{font-size:2.6rem;margin-bottom:6px;}
+.medicine-card .name{font-family:var(--fn);font-weight:900;font-size:1.05rem;margin-bottom:4px;}
+.medicine-card .hint{font-size:.78rem;color:var(--mu);line-height:1.5;}
+.medicine-card.correct{border-color:var(--ok);background:var(--ok2);}
+.medicine-card.wrong{border-color:var(--er);background:var(--er2);}
+
+.done-msg{text-align:center;font-family:var(--fn);font-weight:800;font-size:1rem;padding:14px;display:none;}
+.done-msg.show{display:block;}
+.done-msg.cor{color:var(--ok);}
+.done-msg.wr{color:var(--er);}
+
+/* BINS */
+.bins{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:480px){.bins{grid-template-columns:repeat(2,1fr);gap:8px;}}
+.bin{
+  background:var(--s);border:2px dashed var(--bd);border-radius:14px;
+  padding:14px 10px 12px;text-align:center;cursor:pointer;
+  transition:border-color .18s,background .18s,transform .12s;
+  min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+.bin:hover{border-color:var(--pr);background:var(--s2);transform:scale(1.03);}
+.bin:active{transform:scale(.97);}
+.bin.flash-ok{background:var(--ok2);border-color:var(--ok);}
+.bin.flash-wr{background:var(--er2);border-color:var(--er);}
+.bin .bi{font-size:1.9rem;}
+.bin .bl{font-family:var(--fn);font-weight:800;font-size:.88rem;line-height:1.3;}
+.bin .bc{font-size:.72rem;color:var(--mu);margin-top:2px;}
+
+/* FACT */
+.fact-box{background:var(--s);border:1.5px solid var(--bd);border-radius:12px;padding:13px 16px;margin-bottom:16px;font-size:.84rem;line-height:1.65;color:var(--mu);display:none;}
+.fact-box.show{display:block;}
+.fact-box strong{color:var(--tx);}
+
+/* NEXT BTN */
+.nbtn-wrap{display:flex;justify-content:center;margin-bottom:10px;}
+.nbtn{display:none;padding:10px 26px;border-radius:10px;font-family:var(--fn);font-weight:800;font-size:.92rem;background:var(--pr);color:#fff;transition:background .15s;}
+.nbtn.show{display:block;}
+.nbtn:hover{background:var(--ph);}
+
+/* RESTART */
+.rbtn{display:flex;justify-content:center;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;font-family:var(--fn);font-weight:800;font-size:.9rem;background:var(--pr);color:#fff;transition:background .15s;}
+.btn:hover{background:var(--ph);}
+
+/* WIN OVERLAY */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;}
+.ov.show{opacity:1;pointer-events:all;}
+.ob{background:var(--s);border-radius:20px;padding:38px 28px;text-align:center;max-width:320px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.ob .big{font-size:3rem;margin-bottom:12px;}
+.ob h2{font-family:var(--fn);font-weight:900;font-size:1.4rem;margin-bottom:7px;}
+.ob .sbig{font-family:var(--fn);font-size:2.2rem;font-weight:900;color:var(--pr);margin:10px 0 4px;}
+.ob p{color:var(--mu);margin-bottom:22px;font-size:.87rem;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="back">&#8592; All Games</a>
+  <span class="nt">&#128194; Sort the Medicine</span>
+  <button class="tt" data-theme-toggle aria-label="Toggle dark mode">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<div class="wrap">
+  <div class="gh">
+    <h1>&#128194; Sort the Medicine</h1>
+    <p>Place each medicine into the correct category</p>
+  </div>
+
+  <div class="info">
+    <strong>How to play:</strong> A medicine card appears in the middle. Click the correct category bin below to sort it. You get a fact about each medicine after sorting. Sort all 12 medicines to win!
+  </div>
+
+  <div class="srow">
+    <div class="st"><div class="stl">Score</div><div class="stv" id="score">0</div></div>
+    <div class="st"><div class="stl">Remaining</div><div class="stv" id="remaining">12</div></div>
+  </div>
+
+  <div class="card-area">
+    <div class="medicine-card" id="med-card">
+      <div class="em" id="med-em"></div>
+      <div class="name" id="med-name"></div>
+      <div class="hint" id="med-hint"></div>
+    </div>
+  </div>
+
+  <div class="done-msg" id="done-msg"></div>
+
+  <div class="bins" id="bins">
+    <div class="bin" data-cat="liquid" onclick="sortCard('liquid')">
+      <div class="bi">&#129510;</div>
+      <div class="bl">Liquid</div>
+      <div class="bc">Syrups &amp; solutions</div>
+    </div>
+    <div class="bin" data-cat="tablet" onclick="sortCard('tablet')">
+      <div class="bi">&#128138;</div>
+      <div class="bl">Tablet</div>
+      <div class="bc">Solid pressed pills</div>
+    </div>
+    <div class="bin" data-cat="inhaler" onclick="sortCard('inhaler')">
+      <div class="bi">&#127752;</div>
+      <div class="bl">Inhaler</div>
+      <div class="bc">Breathed into lungs</div>
+    </div>
+    <div class="bin" data-cat="injection" onclick="sortCard('injection')">
+      <div class="bi">&#128137;</div>
+      <div class="bl">Injection</div>
+      <div class="bc">Given with a needle</div>
+    </div>
+  </div>
+
+  <div class="fact-box" id="fact-box"></div>
+
+  <div class="nbtn-wrap">
+    <button class="nbtn" id="nbtn" onclick="nextCard()">Next Medicine &#8594;</button>
+  </div>
+
+  <div class="rbtn">
+    <button class="btn" id="restart">&#128260; Restart</button>
+  </div>
+</div>
+
+<div class="ov" id="win-ov" role="dialog" aria-modal="true">
+  <div class="ob">
+    <div class="big">&#127881;</div>
+    <h2>All medicines sorted!</h2>
+    <div class="sbig" id="win-score"></div>
+    <p id="win-msg"></p>
+    <button class="btn" id="again">&#9654; Play Again</button>
+  </div>
+</div>
+
+<script>
+var MEDICINES = [
+  { em:"&#129510;", name:"Amoxicillin Syrup",   hint:"A common antibiotic for children",        cat:"liquid",    f:"Amoxicillin syrup is a liquid antibiotic used to treat bacterial infections such as ear infections and chest infections. It is measured carefully with a syringe." },
+  { em:"&#129510;", name:"Paracetamol Suspension", hint:"Used to lower fever in young children",  cat:"liquid",    f:"Paracetamol suspension is a sweet liquid that lowers fever and relieves mild pain. It is one of the most commonly used medicines for babies and young children." },
+  { em:"&#129510;", name:"Ibuprofen Syrup",      hint:"Reduces inflammation and fever",           cat:"liquid",    f:"Ibuprofen syrup is an anti-inflammatory liquid medicine that treats pain, swelling, and fever. It is not suitable for all children, so always check with a pharmacist." },
+  { em:"&#128138;", name:"Methotrexate Tablet",  hint:"Used for arthritis and some cancers",      cat:"tablet",    f:"Methotrexate is a tablet used to treat conditions like arthritis and certain cancers. It is very important to take the exact prescribed dose on the right days." },
+  { em:"&#128138;", name:"Prednisolone Tablet",  hint:"A steroid that reduces inflammation",      cat:"tablet",    f:"Prednisolone is a steroid tablet that reduces inflammation in conditions like asthma and allergic reactions. It should always be taken exactly as prescribed." },
+  { em:"&#128138;", name:"Loratadine Tablet",    hint:"For hay fever and allergies",              cat:"tablet",    f:"Loratadine is an antihistamine tablet that relieves hay fever, itching, and allergic reactions. It does not usually cause drowsiness." },
+  { em:"&#127752;", name:"Salbutamol Inhaler",   hint:"The blue reliever inhaler for asthma",     cat:"inhaler",   f:"Salbutamol is the blue reliever inhaler. It quickly relaxes the muscles around the airways, making it easier to breathe during an asthma attack." },
+  { em:"&#127752;", name:"Fluticasone Inhaler",  hint:"A preventer inhaler used every day",       cat:"inhaler",   f:"Fluticasone is a preventer inhaler used daily to reduce airway inflammation. Unlike the blue reliever inhaler, it is used to prevent attacks, not to stop them." },
+  { em:"&#127752;", name:"Budesonide Inhaler",   hint:"Reduces swelling inside the airways",      cat:"inhaler",   f:"Budesonide is a steroid preventer inhaler. Regular use reduces airway inflammation and the number of asthma attacks a child experiences." },
+  { em:"&#128137;", name:"Insulin Injection",    hint:"Controls blood sugar in diabetes",         cat:"injection", f:"Insulin cannot be taken as a tablet because stomach acid destroys it. Children with type 1 diabetes inject insulin under the skin several times a day." },
+  { em:"&#128137;", name:"Adalimumab Injection", hint:"Treats severe inflammation conditions",    cat:"injection", f:"Adalimumab is a biologic medicine given by injection. It is used for conditions like juvenile arthritis and Crohn's disease when other treatments have not worked." },
+  { em:"&#128137;", name:"Methotrexate Injection", hint:"Sometimes given as an alternative to tablets", cat:"injection", f:"Methotrexate can also be given as an injection when tablets cause too many side effects. The injection often causes fewer stomach problems than the tablet form." }
+];
+
+var queue = [], current = null, score = 0, answered = false;
+
+function shuffle(a) { return a.sort(function(){ return Math.random() - 0.5; }); }
+
+function init() {
+  queue = shuffle(MEDICINES.slice());
+  score = 0; answered = false;
+  document.getElementById("score").textContent = "0";
+  document.getElementById("remaining").textContent = queue.length;
+  document.getElementById("fact-box").classList.remove("show");
+  document.getElementById("nbtn").classList.remove("show");
+  document.getElementById("win-ov").classList.remove("show");
+  document.getElementById("done-msg").classList.remove("show","cor","wr");
+  document.getElementById("done-msg").textContent = "";
+  enableBins(true);
+  showCard();
+}
+
+function showCard() {
+  if (queue.length === 0) { showWin(); return; }
+  current = queue[0];
+  answered = false;
+  var card = document.getElementById("med-card");
+  card.className = "medicine-card";
+  document.getElementById("med-em").innerHTML = current.em;
+  document.getElementById("med-name").textContent = current.name;
+  document.getElementById("med-hint").textContent = current.hint;
+  document.getElementById("fact-box").classList.remove("show");
+  document.getElementById("nbtn").classList.remove("show");
+  document.getElementById("done-msg").classList.remove("show","cor","wr");
+  document.getElementById("remaining").textContent = queue.length;
+}
+
+function sortCard(cat) {
+  if (answered || !current) return;
+  answered = true;
+
+  var card = document.getElementById("med-card");
+  var bin = document.querySelector(".bin[data-cat='" + cat + "']");
+  var correct = cat === current.cat;
+
+  if (correct) {
+    card.classList.add("correct");
+    bin.classList.add("flash-ok");
+    score++;
+    document.getElementById("score").textContent = score;
+    var dm = document.getElementById("done-msg");
+    dm.textContent = "&#10003; Correct! Well done.";
+    dm.innerHTML = "&#10003; Correct! Well done.";
+    dm.className = "done-msg show cor";
+  } else {
+    card.classList.add("wrong");
+    bin.classList.add("flash-wr");
+    var dm = document.getElementById("done-msg");
+    dm.innerHTML = "&#10007; Not quite — " + current.name + " is a <strong>" + current.cat + "</strong>.";
+    dm.className = "done-msg show wr";
+  }
+
+  setTimeout(function(){
+    bin.classList.remove("flash-ok","flash-wr");
+  }, 600);
+
+  var fb = document.getElementById("fact-box");
+  fb.innerHTML = "<strong>&#128218; " + current.name + ":</strong> " + current.f;
+  fb.classList.add("show");
+
+  document.getElementById("nbtn").classList.add("show");
+  enableBins(false);
+  queue.shift();
+}
+
+function nextCard() {
+  enableBins(true);
+  showCard();
+}
+
+function enableBins(on) {
+  document.querySelectorAll(".bin").forEach(function(b){
+    b.style.pointerEvents = on ? "auto" : "none";
+    b.style.opacity = on ? "1" : ".55";
+  });
+}
+
+function showWin() {
+  var pct = Math.round((score / MEDICINES.length) * 100);
+  var msg = "Keep practising to improve your score!";
+  if (pct >= 90) msg = "Outstanding — you know your medicine forms!";
+  else if (pct >= 70) msg = "Great work! You sorted most correctly.";
+  else if (pct >= 50) msg = "Good effort — try again to beat your score.";
+  document.getElementById("win-score").textContent = score + " / " + MEDICINES.length;
+  document.getElementById("win-msg").textContent = msg;
+  document.getElementById("win-ov").classList.add("show");
+}
+
+document.getElementById("restart").addEventListener("click", init);
+document.getElementById("again").addEventListener("click", init);
+
+(function(){
+  var t = document.querySelector("[data-theme-toggle]"), r = document.documentElement;
+  var d = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+  r.setAttribute("data-theme", d);
+  if (t) t.addEventListener("click", function(){
+    d = d === "dark" ? "light" : "dark";
+    r.setAttribute("data-theme", d);
+  });
+})();
+
+init();
+</script>
+</body>
+</html>
