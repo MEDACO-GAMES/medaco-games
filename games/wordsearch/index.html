@@ -1,1 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicine Word Hunt — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#fffbeb;--s:#fff;--s2:#fef3c7;--bd:#fde68a;
+  --tx:#2d1a00;--mu:#8a6400;--pr:#b45309;--ph:#92400e;
+  --hl:#fef08a;--hb:#f59e0b;--hbtext:#fff;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 8px rgba(100,60,0,.1);
+}
+[data-theme=dark]{
+  --bg:#1a1000;--s:#271800;--s2:#332000;--bd:#4d3000;
+  --tx:#fef3c7;--mu:#fcd34d;--pr:#fbbf24;--ph:#f59e0b;
+  --hl:#4d3800;--hb:#b45309;--hbtext:#fef3c7;
+  --sh:0 2px 8px rgba(0,0,0,.35);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
 
+nav{background:var(--s);border-bottom:2px solid var(--bd);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nt{font-family:var(--fn);font-weight:800;font-size:1rem;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);}
+.tt:hover{background:var(--s2);}
+
+.wrap{max-width:720px;margin:0 auto;padding:22px 16px 52px;}
+.gh{text-align:center;margin-bottom:18px;}
+.gh h1{font-family:var(--fn);font-weight:900;font-size:1.5rem;margin-bottom:5px;}
+.gh p{color:var(--mu);font-size:.87rem;}
+
+.info{background:var(--s);border:1.5px solid var(--bd);border-radius:12px;padding:12px 16px;font-size:.83rem;color:var(--mu);margin-bottom:16px;line-height:1.65;}
+.info strong{color:var(--tx);}
+
+.layout{display:grid;grid-template-columns:1fr 150px;gap:20px;align-items:start;}
+@media(max-width:540px){.layout{grid-template-columns:1fr;}}
+
+#grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+.wsgrid{
+  display:inline-grid;
+  border:2px solid var(--bd);
+  border-radius:11px;
+  overflow:hidden;
+  user-select:none;
+  -webkit-user-select:none;
+  background:var(--s);
+  box-shadow:var(--sh);
+}
+.cell{
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fn);font-weight:800;font-size:.92rem;
+  cursor:pointer;
+  border:1px solid var(--s2);
+  transition:background .1s;
+  color:var(--tx);
+}
+.cell.sel{background:var(--hl);}
+.cell.found{background:var(--hb);color:var(--hbtext);}
+@media(max-width:400px){.cell{width:27px;height:27px;font-size:.75rem;}}
+
+.wordlist h3{font-family:var(--fn);font-weight:800;font-size:.92rem;margin-bottom:10px;}
+.wi{font-size:.82rem;font-weight:600;padding:5px 0;border-bottom:1px solid var(--bd);color:var(--mu);display:flex;align-items:center;gap:6px;transition:color .2s;}
+.wi.done{text-decoration:line-through;color:var(--pr);}
+.tick{font-size:.75rem;opacity:0;transition:opacity .2s;}
+.wi.done .tick{opacity:1;}
+
+.prog{margin-top:12px;font-size:.8rem;color:var(--mu);font-weight:600;text-align:center;}
+
+.fact-box{background:var(--s);border:1.5px solid var(--bd);border-radius:12px;padding:13px 16px;margin-top:16px;font-size:.84rem;line-height:1.65;color:var(--mu);display:none;}
+.fact-box.show{display:block;}
+.fact-box strong{color:var(--tx);}
+
+.rbtn{display:flex;justify-content:center;margin-top:18px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;font-family:var(--fn);font-weight:800;font-size:.9rem;background:var(--pr);color:#fff;transition:background .15s;}
+.btn:hover{background:var(--ph);}
+
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;}
+.ov.show{opacity:1;pointer-events:all;}
+.ob{background:var(--s);border-radius:20px;padding:36px 28px;text-align:center;max-width:310px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.ob .big{font-size:3rem;margin-bottom:10px;}
+.ob h2{font-family:var(--fn);font-weight:900;font-size:1.4rem;margin-bottom:7px;}
+.ob p{color:var(--mu);margin-bottom:22px;font-size:.87rem;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="back">&#8592; All Games</a>
+  <span class="nt">&#128269; Medicine Word Hunt</span>
+  <button class="tt" data-theme-toggle aria-label="Toggle dark mode">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<div class="wrap">
+  <div class="gh">
+    <h1>&#128269; Medicine Word Hunt</h1>
+    <p>Find all 8 hidden medicine words in the grid</p>
+  </div>
+
+  <div class="info">
+    <strong>How to play:</strong> Click the <strong>first letter</strong> of a word, then click the <strong>last letter</strong>. Words can go across &#8594;, down &#8595;, or diagonally &#8600;. Find all 8 words to win!
+  </div>
+
+  <div class="layout">
+    <div id="grid-wrap"></div>
+    <div class="wordlist">
+      <h3>Find these words:</h3>
+      <div id="wordlist"></div>
+      <div class="prog" id="prog">0 / 8 found</div>
+    </div>
+  </div>
+
+  <div class="fact-box" id="fact-box"></div>
+
+  <div class="rbtn">
+    <button class="btn" id="restart">&#128260; New Game</button>
+  </div>
+</div>
+
+<div class="ov" id="win-ov" role="dialog" aria-modal="true">
+  <div class="ob">
+    <div class="big">&#127881;</div>
+    <h2>All words found!</h2>
+    <p>Amazing work — you found every medicine word!</p>
+    <button class="btn" id="again">&#9654; Play Again</button>
+  </div>
+</div>
+
+<script>
+var WORDS = [
+  { w:"TABLET",  f:"Tablets are solid medicines pressed into a small flat shape. They are one of the most common medicine forms for older children and adults." },
+  { w:"LIQUID",  f:"Liquid medicines can be measured precisely with a syringe. They are ideal for young children who find swallowing tablets difficult." },
+  { w:"CAPSULE", f:"Capsules have a hard shell containing powder or liquid inside. Some capsules can be opened and the contents mixed with food." },
+  { w:"INHALER", f:"Inhalers deliver medicine directly to the lungs. The blue reliever inhaler helps open airways quickly during an asthma attack." },
+  { w:"INSULIN", f:"Insulin is a hormone that helps the body use sugar for energy. Children with type 1 diabetes inject insulin every day." },
+  { w:"DOSE",    f:"A dose is the exact amount of medicine to take at one time. Getting the dose right is very important — always check the label carefully." },
+  { w:"PATCH",   f:"Medicine patches stick to the skin and slowly release medicine into the body over hours or days, avoiding the need to swallow anything." },
+  { w:"SYRUP",   f:"Syrups are sweet liquid medicines. The sweetness helps disguise bitter active ingredients, making them easier for children to take." }
+];
+
+var SIZE = 12;
+var grid = [], placed = [], found = [], firstSel = null;
+
+function makeGrid() {
+  grid = [];
+  var i, j;
+  for (i = 0; i < SIZE; i++) {
+    grid.push([]);
+    for (j = 0; j < SIZE; j++) grid[i].push("");
+  }
+  placed = [];
+
+  var dirs = [[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1],[1,-1],[-1,1]];
+
+  WORDS.forEach(function(wo) {
+    var w = wo.w, ok = false, tries = 0;
+    while (!ok && tries < 300) {
+      tries++;
+      var d = dirs[Math.floor(Math.random() * dirs.length)];
+      var r = Math.floor(Math.random() * SIZE);
+      var c = Math.floor(Math.random() * SIZE);
+      var er = r + d[0] * (w.length - 1);
+      var ec = c + d[1] * (w.length - 1);
+      if (er < 0 || er >= SIZE || ec < 0 || ec >= SIZE) continue;
+      var fit = true;
+      for (var k = 0; k < w.length; k++) {
+        var lr = r + d[0] * k, lc = c + d[1] * k;
+        if (grid[lr][lc] && grid[lr][lc] !== w[k]) { fit = false; break; }
+      }
+      if (fit) {
+        for (var k = 0; k < w.length; k++) grid[r + d[0]*k][c + d[1]*k] = w[k];
+        placed.push({ word:w, r:r, c:c, dr:d[0], dc:d[1] });
+        ok = true;
+      }
+    }
+  });
+
+  var alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (i = 0; i < SIZE; i++)
+    for (j = 0; j < SIZE; j++)
+      if (!grid[i][j]) grid[i][j] = alpha[Math.floor(Math.random() * 26)];
+}
+
+function renderGrid() {
+  var wrap = document.getElementById("grid-wrap");
+  wrap.innerHTML = "";
+  var g = document.createElement("div");
+  g.className = "wsgrid";
+  g.style.gridTemplateColumns = "repeat(" + SIZE + ", 34px)";
+  for (var i = 0; i < SIZE; i++) {
+    for (var j = 0; j < SIZE; j++) {
+      var c = document.createElement("div");
+      c.className = "cell";
+      c.textContent = grid[i][j];
+      c.dataset.r = i;
+      c.dataset.c = j;
+      c.addEventListener("click", cellClick);
+      g.appendChild(c);
+    }
+  }
+  wrap.appendChild(g);
+}
+
+function renderList() {
+  var wl = document.getElementById("wordlist");
+  wl.innerHTML = "";
+  WORDS.forEach(function(wo) {
+    var d = document.createElement("div");
+    var isDone = found.indexOf(wo.w) >= 0;
+    d.className = "wi" + (isDone ? " done" : "");
+    d.id = "wi-" + wo.w;
+    d.innerHTML = '<span class="tick">&#10003;</span>' + wo.w;
+    wl.appendChild(d);
+  });
+}
+
+function cellClick(e) {
+  var r = parseInt(e.target.dataset.r);
+  var c = parseInt(e.target.dataset.c);
+  if (!firstSel) {
+    firstSel = { r:r, c:c };
+    e.target.classList.add("sel");
+  } else {
+    clearSel();
+    checkWord(firstSel.r, firstSel.c, r, c);
+    firstSel = null;
+  }
+}
+
+function clearSel() {
+  document.querySelectorAll(".cell.sel").forEach(function(c){ c.classList.remove("sel"); });
+}
+
+function checkWord(r1, c1, r2, c2) {
+  var dr0 = r2 - r1, dc0 = c2 - c1;
+  var mx = Math.max(Math.abs(dr0), Math.abs(dc0));
+  if (mx === 0) return;
+  if (dr0 !== 0 && dc0 !== 0 && Math.abs(dr0) !== Math.abs(dc0)) return;
+
+  var dr = dr0 / mx, dc = dc0 / mx;
+  var str = "", cells = [];
+  for (var k = 0; k <= mx; k++) {
+    var rr = r1 + dr * k, cc = c1 + dc * k;
+    str += grid[rr][cc];
+    cells.push({ r:rr, c:cc });
+  }
+
+  var rev = str.split("").reverse().join("");
+  var match = WORDS.filter(function(wo){
+    return found.indexOf(wo.w) < 0 && (wo.w === str || wo.w === rev);
+  });
+
+  if (match.length) {
+    var wo = match[0];
+    found.push(wo.w);
+    cells.forEach(function(p){
+      document.querySelector(".cell[data-r='" + p.r + "'][data-c='" + p.c + "']").classList.add("found");
+    });
+    var item = document.getElementById("wi-" + wo.w);
+    if (item) item.className = "wi done";
+    document.getElementById("prog").textContent = found.length + " / 8 found";
+
+    var fb = document.getElementById("fact-box");
+    fb.innerHTML = "<strong>&#127881; " + wo.w + ":</strong> " + wo.f;
+    fb.classList.add("show");
+
+    if (found.length === WORDS.length) {
+      setTimeout(function(){
+        document.getElementById("win-ov").classList.add("show");
+      }, 600);
+    }
+  }
+}
+
+function init() {
+  found = []; firstSel = null;
+  makeGrid();
+  renderGrid();
+  renderList();
+  document.getElementById("prog").textContent = "0 / 8 found";
+  document.getElementById("fact-box").classList.remove("show");
+  document.getElementById("win-ov").classList.remove("show");
+}
+
+document.getElementById("restart").addEventListener("click", init);
+document.getElementById("again").addEventListener("click", init);
+
+(function(){
+  var t = document.querySelector("[data-theme-toggle]"), r = document.documentElement;
+  var d = matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
+  r.setAttribute("data-theme", d);
+  if (t) t.addEventListener("click", function(){
+    d = d === "dark" ? "light" : "dark";
+    r.setAttribute("data-theme", d);
+  });
+})();
+
+init();
+</script>
+</body>
+</html>
