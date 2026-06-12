@@ -19,113 +19,101 @@
   --sh:0 2px 10px rgba(0,0,0,.35);
   --card-sh:0 0 40px rgba(0,0,0,0.85);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
-a{text-decoration:none;color:inherit;}
-button{cursor:pointer;font:inherit;border:none;background:none;}
-img{display:block;max-width:100%;height:auto;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font:inherit;border:none;background:none}
+img{display:block;max-width:100%;height:auto}
 
-/* ── NAV ── */
-nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
-.ni{max-width:1200px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.nav-logo{display:flex;align-items:center;gap:10px;}
-.nav-logo svg{flex-shrink:0;}
-.nav-brand{font-family:var(--fn);font-weight:900;font-size:1.25rem;color:var(--pr);}
-.tt{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:1.1rem;transition:background .15s;}
-.tt:hover{background:var(--s2);}
+/* NAV */
+nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.ni{max-width:1200px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-brand{font-family:var(--fn);font-weight:900;font-size:1.25rem;color:var(--pr)}
+.tt{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:1.1rem;transition:background .15s}
+.tt:hover{background:var(--s2)}
 
-/* ── HERO ── */
+/* HERO */
 .hero{
-  position:relative;
-  min-height:380px;
+  position:relative;min-height:380px;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(0deg,rgba(0,0,0,.55),rgba(0,0,0,.35)),
     linear-gradient(135deg,#1a237e 0%,#4361ee 50%,#7b2ff7 100%);
-  overflow:hidden;
-  padding:40px 20px;
+  overflow:hidden;padding:40px 20px;
 }
-/* animated floating shapes */
-.hero-shape{position:absolute;border-radius:50%;opacity:.18;animation:floatShape 8s ease-in-out infinite;}
-.hs1{width:300px;height:300px;background:#fff;top:-80px;left:-60px;animation-delay:0s;}
-.hs2{width:180px;height:180px;background:#ffe066;bottom:-40px;right:10%;animation-delay:-3s;}
-.hs3{width:120px;height:120px;background:#4ade80;top:30%;right:-30px;animation-delay:-5s;}
-@keyframes floatShape{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-18px) scale(1.06);}}
+.hero-shape{position:absolute;border-radius:50%;opacity:.18;animation:floatShape 8s ease-in-out infinite}
+.hs1{width:300px;height:300px;background:#fff;top:-80px;left:-60px;animation-delay:0s}
+.hs2{width:180px;height:180px;background:#ffe066;bottom:-40px;right:10%;animation-delay:-3s}
+.hs3{width:120px;height:120px;background:#4ade80;top:30%;right:-30px;animation-delay:-5s}
+@keyframes floatShape{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.06)}}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:680px}
+.hero-tag{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-family:var(--fn);font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:16px;border:1px solid rgba(255,255,255,.3)}
+.hero-title{font-family:var(--fn);font-weight:900;font-size:clamp(2.2rem,6vw,3.6rem);color:#fff;line-height:1.1;margin-bottom:14px}
+.hero-title span{color:#ffe066}
+.hero-sub{color:rgba(255,255,255,.88);font-size:clamp(.95rem,2vw,1.15rem);margin-bottom:8px;font-weight:500}
+.hero-note{color:rgba(255,255,255,.65);font-size:.88rem;margin-bottom:28px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#ffe066;color:#1a1d3c;border-radius:999px;font-family:var(--fn);font-weight:900;font-size:1rem;box-shadow:0 6px 20px rgba(255,224,102,.4);transition:transform .18s,box-shadow .18s}
+.hero-cta:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(255,224,102,.5)}
+.hero-cta svg{transition:transform .18s}
+.hero-cta:hover svg{transform:translateX(3px)}
 
-.hero-content{position:relative;z-index:1;text-align:center;max-width:680px;}
-.hero-tag{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-family:var(--fn);font-weight:800;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:16px;border:1px solid rgba(255,255,255,.3);}
-.hero-title{font-family:var(--fn);font-weight:900;font-size:clamp(2.2rem,6vw,3.6rem);color:#fff;line-height:1.1;margin-bottom:14px;}
-.hero-title span{color:#ffe066;}
-.hero-sub{color:rgba(255,255,255,.88);font-size:clamp(.95rem,2vw,1.15rem);margin-bottom:8px;font-weight:500;}
-.hero-note{color:rgba(255,255,255,.65);font-size:.88rem;margin-bottom:28px;}
-.hero-cta{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#ffe066;color:#1a1d3c;border-radius:999px;font-family:var(--fn);font-weight:900;font-size:1rem;box-shadow:0 6px 20px rgba(255,224,102,.4);transition:transform .18s,box-shadow .18s;}
-.hero-cta:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(255,224,102,.5);}
-.hero-cta svg{transition:transform .18s;}
-.hero-cta:hover svg{transform:translateX(3px);}
+/* WRAP */
+.wrap{max-width:1200px;margin:0 auto;padding:40px 20px 70px}
 
-/* ── MAIN WRAP ── */
-.wrap{max-width:1200px;margin:0 auto;padding:40px 20px 70px;}
+/* SECTION HEADER */
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.sec-head h2{font-family:var(--fn);font-weight:900;font-size:1.25rem}
+.sec-line{flex:1;height:2px;background:var(--bd);border-radius:999px}
+.sec-badge{background:var(--pr);color:#fff;font-family:var(--fn);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:999px}
 
-/* ── SECTION HEADER ── */
-.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
-.sec-head h2{font-family:var(--fn);font-weight:900;font-size:1.25rem;}
-.sec-line{flex:1;height:2px;background:var(--bd);border-radius:999px;}
-.sec-badge{background:var(--pr);color:#fff;font-family:var(--fn);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:999px;}
+/* GAME GRID */
+.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px}
+@media(max-width:860px){.game-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
+@media(max-width:540px){.game-grid{grid-template-columns:1fr;gap:14px}}
 
-/* ── GAME GRID ── */
-.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:40px;}
-@media(max-width:860px){.game-grid{grid-template-columns:repeat(2,1fr);gap:16px;}}
-@media(max-width:540px){.game-grid{grid-template-columns:1fr;gap:14px;}}
-
-/* ── GAME CARD ── */
+/* GAME CARD */
 .game-card{
-  position:relative;
-  border-radius:22px;
-  overflow:hidden;
-  border:4px solid #000;
-  box-shadow:var(--card-sh);
-  aspect-ratio:4/3;
-  transition:transform .22s,box-shadow .22s;
-  display:block;
-  background:var(--s2);
+  position:relative;border-radius:22px;overflow:hidden;
+  border:4px solid #000;box-shadow:var(--card-sh);aspect-ratio:4/3;
+  transition:transform .22s,box-shadow .22s;display:block;background:var(--s2);
 }
-.game-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 0 55px rgba(0,0,0,.7);}
-.game-card img{width:100%;height:100%;object-fit:cover;display:block;}
-
-/* placeholder when no image */
-.game-card-placeholder{
-  width:100%;height:100%;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:10px;
-  background:linear-gradient(135deg,var(--s2),var(--bd));
-  padding:20px;text-align:center;
-}
-.gcp-emoji{font-size:52px;}
-.gcp-label{font-family:var(--fn);font-weight:900;font-size:1rem;color:var(--tx);}
-.gcp-desc{font-size:.78rem;color:var(--mu);}
-
-/* hover overlay */
+.game-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 0 55px rgba(0,0,0,.7)}
+.game-card img{width:100%;height:100%;object-fit:cover;display:block}
+.game-card-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center}
+.gcp-emoji{font-size:52px}
+.gcp-label{font-family:var(--fn);font-weight:900;font-size:1rem;color:var(--tx)}
+.gcp-desc{font-size:.78rem;color:var(--mu)}
 .game-card-overlay{
   position:absolute;inset:0;
   background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.1) 55%,transparent 100%);
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:18px 16px;
-  opacity:0;transition:opacity .22s;
+  padding:18px 16px;opacity:0;transition:opacity .22s;
 }
-.game-card:hover .game-card-overlay{opacity:1;}
-.gco-title{font-family:var(--fn);font-weight:900;color:#fff;font-size:1rem;margin-bottom:4px;}
-.gco-play{display:inline-flex;align-items:center;gap:6px;background:#ffe066;color:#1a1d3c;padding:6px 14px;border-radius:999px;font-family:var(--fn);font-weight:800;font-size:.82rem;}
+.game-card:hover .game-card-overlay{opacity:1}
+.gco-title{font-family:var(--fn);font-weight:900;color:#fff;font-size:1rem;margin-bottom:4px}
+.gco-play{display:inline-flex;align-items:center;gap:6px;background:#ffe066;color:#1a1d3c;padding:6px 14px;border-radius:999px;font-family:var(--fn);font-weight:800;font-size:.82rem}
 
-/* ── STATS STRIP ── */
-.stats-strip{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0 40px;padding:22px;background:var(--s);border-radius:16px;border:2px solid var(--bd);box-shadow:var(--sh);}
-.stat-item{text-align:center;padding:8px 20px;}
-.stat-num{font-family:var(--fn);font-weight:900;font-size:2rem;color:var(--pr);}
-.stat-lbl{font-size:.78rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+/* CARD GRADIENT BACKGROUNDS */
+.gc-purple{background:linear-gradient(135deg,#667eea,#764ba2)}
+.gc-teal{background:linear-gradient(135deg,#0abde3,#006266)}
+.gc-green{background:linear-gradient(135deg,#a8e063,#56ab2f)}
+.gc-orange{background:linear-gradient(135deg,#f7971e,#ffd200)}
+.gc-red{background:linear-gradient(135deg,#f953c6,#b91d73)}
+.gc-blue{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+.gc-forest{background:linear-gradient(135deg,#134e5e,#71b280)}
+.gc-pink{background:linear-gradient(135deg,#ff6a88,#ff99ac)}
+.gc-indigo{background:linear-gradient(135deg,#3c1053,#ad5389)}
 
-/* ── FOOTER ── */
-footer{background:var(--s);border-top:2px solid var(--bd);padding:20px;text-align:center;font-size:.82rem;color:var(--mu);}
-footer strong{color:var(--pr);font-family:var(--fn);}
+/* STATS STRIP */
+.stats-strip{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:32px 0 40px;padding:22px;background:var(--s);border-radius:16px;border:2px solid var(--bd);box-shadow:var(--sh)}
+.stat-item{text-align:center;padding:8px 20px}
+.stat-num{font-family:var(--fn);font-weight:900;font-size:2rem;color:var(--pr)}
+.stat-lbl{font-size:.78rem;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+
+/* FOOTER */
+footer{background:var(--s);border-top:2px solid var(--bd);padding:20px;text-align:center;font-size:.82rem;color:var(--mu)}
+footer strong{color:var(--pr);font-family:var(--fn)}
 </style>
 </head>
 <body>
@@ -134,7 +122,6 @@ footer strong{color:var(--pr);font-family:var(--fn);}
 <nav>
   <div class="ni">
     <div class="nav-logo">
-      <!-- SVG Logo -->
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-label="MEDACO Games logo">
         <rect width="36" height="36" rx="10" fill="#4361ee"/>
         <text x="18" y="25" font-family="Nunito,sans-serif" font-weight="900" font-size="18" fill="white" text-anchor="middle">M</text>
@@ -175,7 +162,7 @@ footer strong{color:var(--pr);font-family:var(--fn);}
     <div class="stat-item"><div class="stat-num">🆓</div><div class="stat-lbl">Free to Play</div></div>
   </div>
 
-  <!-- ROW 1 -->
+  <!-- ROW 1: PUZZLES -->
   <div class="sec-head">
     <h2>🧩 Puzzles</h2>
     <div class="sec-line"></div>
@@ -183,23 +170,23 @@ footer strong{color:var(--pr);font-family:var(--fn);}
   </div>
   <div class="game-grid">
 
-    <a class="game-card" href="games/maze/index.html">
-      <div class="game-card-placeholder">
+    <a class="game-card" href="games/jigsaw/index.html">
+      <div class="game-card-placeholder gc-purple">
         <div class="gcp-emoji">🧩</div>
-        <div class="gcp-label">Jigsaw Puzzles</div>
-        <div class="gcp-desc">Piece together fun images</div>
+        <div class="gcp-label" style="color:#fff">Jigsaw Puzzle</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Piece together fun images — upload your own!</div>
       </div>
       <div class="game-card-overlay">
-        <div class="gco-title">Jigsaw Puzzles</div>
+        <div class="gco-title">Jigsaw Puzzle</div>
         <span class="gco-play">▶ Play Now</span>
       </div>
     </a>
 
-    <a class="game-card" href="games/maze/index.html">
-      <div class="game-card-placeholder">
-        <div class="gcp-emoji">🔤</div>
-        <div class="gcp-label">Word Search</div>
-        <div class="gcp-desc">Find hidden words in the grid</div>
+    <a class="game-card" href="games/word-search/index.html">
+      <div class="game-card-placeholder gc-teal">
+        <div class="gcp-emoji">🔍</div>
+        <div class="gcp-label" style="color:#fff">Word Search</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Find hidden words in the grid</div>
       </div>
       <div class="game-card-overlay">
         <div class="gco-title">Word Search</div>
@@ -208,66 +195,66 @@ footer strong{color:var(--pr);font-family:var(--fn);}
     </a>
 
     <a class="game-card" href="games/maze/index.html">
-      <div class="game-card-placeholder">
-        <div class="gcp-emoji">🦁</div>
-        <div class="gcp-label">Maze Hunter</div>
-        <div class="gcp-desc">Help Leo reach Zara!</div>
+      <div class="game-card-placeholder gc-green">
+        <div class="gcp-emoji">🌀</div>
+        <div class="gcp-label" style="color:#fff">Maze Game</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Navigate the maze to reach the goal</div>
       </div>
       <div class="game-card-overlay">
-        <div class="gco-title">Maze Hunter</div>
+        <div class="gco-title">Maze Game</div>
         <span class="gco-play">▶ Play Now</span>
       </div>
     </a>
 
   </div>
 
-  <!-- ROW 2 -->
+  <!-- ROW 2: CREATIVE & QUIZ -->
   <div class="sec-head">
-    <h2>🎨 Creative &amp; Action</h2>
+    <h2>🎨 Creative &amp; Quiz</h2>
     <div class="sec-line"></div>
     <span class="sec-badge">3 games</span>
   </div>
   <div class="game-grid">
 
-    <a class="game-card" href="#">
-      <div class="game-card-placeholder">
+    <a class="game-card" href="games/coloring/index.html">
+      <div class="game-card-placeholder gc-orange">
         <div class="gcp-emoji">🎨</div>
-        <div class="gcp-label">Colouring</div>
-        <div class="gcp-desc">Colour in your favourite scenes</div>
+        <div class="gcp-label" style="color:#1a1d3c">Colouring Book</div>
+        <div class="gcp-desc" style="color:rgba(0,0,0,.6)">Colour in your favourite scenes</div>
       </div>
       <div class="game-card-overlay">
-        <div class="gco-title">Colouring</div>
+        <div class="gco-title">Colouring Book</div>
         <span class="gco-play">▶ Play Now</span>
       </div>
     </a>
 
-    <a class="game-card" href="#">
-      <div class="game-card-placeholder">
-        <div class="gcp-emoji">⚽</div>
-        <div class="gcp-label">Tilt Maze</div>
-        <div class="gcp-desc">Tilt your way to the exit</div>
-      </div>
-      <div class="game-card-overlay">
-        <div class="gco-title">Tilt Maze</div>
-        <span class="gco-play">▶ Play Now</span>
-      </div>
-    </a>
-
-    <a class="game-card" href="#">
-      <div class="game-card-placeholder">
+    <a class="game-card" href="games/froggy-jumps/index.html">
+      <div class="game-card-placeholder gc-blue">
         <div class="gcp-emoji">🐸</div>
-        <div class="gcp-label">Froggy Jump</div>
-        <div class="gcp-desc">Jump across the lily pads!</div>
+        <div class="gcp-label" style="color:#fff">Froggy Jumps</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Help Froggy learn greetings!</div>
       </div>
       <div class="game-card-overlay">
-        <div class="gco-title">Froggy Jump</div>
+        <div class="gco-title">Froggy Jumps</div>
+        <span class="gco-play">▶ Play Now</span>
+      </div>
+    </a>
+
+    <a class="game-card" href="games/snap/index.html">
+      <div class="game-card-placeholder gc-red">
+        <div class="gcp-emoji">🃏</div>
+        <div class="gcp-label" style="color:#fff">Snap!</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Quick-fire card matching game</div>
+      </div>
+      <div class="game-card-overlay">
+        <div class="gco-title">Snap!</div>
         <span class="gco-play">▶ Play Now</span>
       </div>
     </a>
 
   </div>
 
-  <!-- ROW 3 -->
+  <!-- ROW 3: MEMORY & MATCHING -->
   <div class="sec-head">
     <h2>🃏 Memory &amp; Matching</h2>
     <div class="sec-line"></div>
@@ -276,10 +263,10 @@ footer strong{color:var(--pr);font-family:var(--fn);}
   <div class="game-grid">
 
     <a class="game-card" href="games/memory/index.html">
-      <div class="game-card-placeholder">
+      <div class="game-card-placeholder gc-forest">
         <div class="gcp-emoji">🌲</div>
-        <div class="gcp-label">Memory Match</div>
-        <div class="gcp-desc">Forest Friends memory game</div>
+        <div class="gcp-label" style="color:#fff">Memory Match</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Forest Friends memory game</div>
       </div>
       <div class="game-card-overlay">
         <div class="gco-title">Memory Match</div>
@@ -288,10 +275,10 @@ footer strong{color:var(--pr);font-family:var(--fn);}
     </a>
 
     <a class="game-card" href="games/matching/index.html">
-      <div class="game-card-placeholder">
+      <div class="game-card-placeholder gc-pink">
         <div class="gcp-emoji">🎯</div>
-        <div class="gcp-label">Custom Matching Cards</div>
-        <div class="gcp-desc">Match pairs across 3 levels</div>
+        <div class="gcp-label" style="color:#fff">Custom Matching Cards</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Match pairs across 3 levels</div>
       </div>
       <div class="game-card-overlay">
         <div class="gco-title">Custom Matching Cards</div>
@@ -299,14 +286,14 @@ footer strong{color:var(--pr);font-family:var(--fn);}
       </div>
     </a>
 
-    <a class="game-card" href="#">
-      <div class="game-card-placeholder">
-        <div class="gcp-emoji">🧩</div>
-        <div class="gcp-label">Jigsaw Random</div>
-        <div class="gcp-desc">Surprise puzzle every time!</div>
+    <a class="game-card" href="games/quiz/index.html">
+      <div class="game-card-placeholder gc-indigo">
+        <div class="gcp-emoji">❓</div>
+        <div class="gcp-label" style="color:#fff">Quiz Game</div>
+        <div class="gcp-desc" style="color:rgba(255,255,255,.8)">Test your knowledge — 3 levels!</div>
       </div>
       <div class="game-card-overlay">
-        <div class="gco-title">Jigsaw Random</div>
+        <div class="gco-title">Quiz Game</div>
         <span class="gco-play">▶ Play Now</span>
       </div>
     </a>
