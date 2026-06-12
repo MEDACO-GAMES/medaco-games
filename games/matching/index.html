@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matching Pairs Game — MEDACO Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme=light]{
+  --bg:#f0f4ff;--s:#fff;--s2:#e8eeff;--bd:#c5d0f5;
+  --tx:#1a1f3c;--mu:#4a5280;--pr:#4361ee;--ph:#3451d1;
+  --fn:'Nunito',sans-serif;--fb:'Inter',sans-serif;
+  --sh:0 2px 10px rgba(40,60,180,.1);--sh2:0 8px 28px rgba(40,60,180,.18);
+}
+[data-theme=dark]{
+  --bg:#0d0f1f;--s:#131628;--s2:#181c32;--bd:#242a4a;
+  --tx:#d8dcff;--mu:#8890cc;--pr:#6c7fff;--ph:#8e9fff;
+  --sh:0 2px 10px rgba(0,0,0,.3);--sh2:0 8px 28px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--bg);color:var(--tx);min-height:100dvh;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+img{display:block;max-width:100%;height:auto;}
+
+/* NAV */
+nav{background:var(--s);border-bottom:2px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:var(--sh);}
+.ni{max-width:1100px;margin:0 auto;padding:0 18px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.back{display:flex;align-items:center;gap:5px;color:var(--pr);font-weight:700;font-size:.9rem;font-family:var(--fn);}
+.back:hover{text-decoration:underline;}
+.nav-title{font-family:var(--fn);font-weight:900;font-size:1rem;}
+.nav-right{display:flex;gap:8px;align-items:center;}
+.tt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--mu);}
+.tt:hover{background:var(--s2);color:var(--pr);}
+.snd-btn{padding:7px 14px;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.82rem;background:#27ae60;color:#fff;}
+.snd-btn.off{background:#95a5a6;}
+.admin-btn{padding:7px 14px;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.82rem;background:#34495e;color:#fff;}
+
+/* WRAP */
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px;}
+
+/* ADMIN PANEL */
+.admin-panel{display:none;background:var(--s);border:2px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:var(--sh);}
+.admin-panel h3{font-family:var(--fn);font-weight:900;font-size:1.15rem;margin-bottom:16px;}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+@media(max-width:540px){.ap-grid{grid-template-columns:1fr;}}
+.ap-box{border:2px dashed var(--bd);border-radius:10px;padding:14px;background:var(--bg);}
+.ap-box h5{font-family:var(--fn);font-weight:800;font-size:.88rem;margin-bottom:10px;color:var(--mu);}
+.ap-box label{display:block;font-weight:700;font-size:.82rem;margin-bottom:5px;color:var(--mu);}
+.ap-box input[type=text]{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:8px;background:var(--s);color:var(--tx);font-size:.88rem;margin-bottom:10px;}
+.ap-box input[type=file]{width:100%;padding:6px;border:1.5px solid var(--bd);border-radius:8px;background:var(--s);color:var(--tx);margin-bottom:10px;font-size:.82rem;}
+.preview{width:100%;height:110px;border:2px dashed var(--bd);border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;color:var(--mu);font-size:.82rem;}
+.preview img{width:100%;height:100%;object-fit:contain;}
+.btn-add-pair{padding:11px 24px;background:#27ae60;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-add-pair:hover{background:#219a52;}
+.pairs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;max-height:340px;overflow-y:auto;margin-top:14px;}
+.pair-item{border:1.5px solid var(--bd);border-radius:9px;padding:11px;background:var(--bg);}
+.pair-row{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:8px;font-size:.8rem;text-align:center;}
+.pair-row strong{display:block;font-family:var(--fn);font-weight:800;}
+.pair-sep{color:var(--pr);font-weight:900;}
+.btn-del-pair{width:100%;padding:5px;background:#e74c3c;color:#fff;border-radius:6px;font-size:.78rem;font-weight:700;}
+.btn-del-pair:hover{background:#c0392b;}
+.btn-reset-pairs{margin-top:12px;padding:8px 18px;background:#e74c3c;color:#fff;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.83rem;}
+.btn-close-admin{margin-top:10px;padding:8px 18px;background:#95a5a6;color:#fff;border-radius:8px;font-family:var(--fn);font-weight:700;font-size:.83rem;}
+
+/* PAGE TITLE */
+.page-title{text-align:center;margin-bottom:22px;}
+.page-title h1{font-family:var(--fn);font-weight:900;font-size:clamp(1.5rem,4vw,2.1rem);margin-bottom:6px;}
+.page-title p{color:var(--mu);font-size:.92rem;}
+
+/* LEVEL SCREEN */
+.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin:18px 0;}
+.level-card{border-radius:16px;padding:24px;box-shadow:var(--sh2);position:relative;transition:transform .2s;}
+.level-card:hover{transform:translateY(-3px);}
+.level-card.locked{opacity:.55;}
+.lock-badge{position:absolute;top:14px;right:14px;padding:3px 11px;border-radius:999px;font-size:.72rem;font-weight:700;color:#fff;}
+.level-card h3{font-family:var(--fn);font-weight:900;font-size:1.3rem;margin-bottom:10px;}
+.level-meta{font-size:.83rem;margin-bottom:14px;line-height:1.9;}
+.level-stars{margin-top:6px;font-size:.83rem;font-weight:700;}
+.lc-easy{background:linear-gradient(135deg,#a8e6cf,#81c784);}
+.lc-easy h3{color:#1b5e20;}.lc-easy .level-meta{color:#2e7d32;}
+.lc-medium{background:linear-gradient(135deg,#ffd89b,#ffa726);}
+.lc-medium h3{color:#e65100;}.lc-medium .level-meta{color:#f57c00;}
+.lc-hard{background:linear-gradient(135deg,#ff9a9e,#e74c3c);}
+.lc-hard h3{color:#c0392b;}.lc-hard .level-meta{color:#d32f2f;}
+.btn-level{width:100%;padding:12px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.95rem;color:#fff;margin-top:4px;}
+.btn-easy{background:#27ae60;}.btn-easy:hover{background:#219a52;}
+.btn-medium{background:#f39c12;}.btn-medium:hover{background:#d68910;}
+.btn-hard{background:#e74c3c;}.btn-hard:hover{background:#c0392b;}
+.btn-locked{background:#95a5a6;cursor:not-allowed;}
+
+/* GAME SCREEN */
+#game-screen{display:none;}
+.stats-bar{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;justify-content:center;}
+.stat{padding:10px 18px;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;color:#fff;}
+.stat-level{background:#3498db;}
+.stat-timer{background:#f39c12;}
+.stat-timer.urgent{background:#e74c3c;}
+.stat-attempts{background:#9b59b6;}
+.stat-matched{background:#27ae60;}
+
+/* MATCH CARDS */
+#game-board{display:grid;gap:12px;margin:16px 0;justify-content:center;}
+.match-card{background:var(--s);border:2.5px solid var(--bd);border-radius:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;min-height:110px;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s,background .2s,border-color .2s;user-select:none;}
+.match-card:hover:not(.matched):not(.selected){transform:translateY(-4px);box-shadow:var(--sh2);border-color:var(--pr);}
+.match-card.selected{background:var(--s2);border-color:var(--pr);transform:scale(1.04);}
+.match-card.matched{background:#dcfce7;border-color:#4caf50;cursor:default;opacity:.75;}
+.match-card.wrong{background:#fee2e2;border-color:#f44336;animation:shake .45s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+.match-card img{max-width:100%;max-height:70px;object-fit:contain;margin-bottom:8px;border-radius:6px;}
+.match-card .card-text{font-family:var(--fn);font-weight:800;font-size:.9rem;color:var(--tx);text-align:center;line-height:1.35;word-break:break-word;}
+
+/* CONTROLS */
+.game-controls{text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-back-lvl{padding:11px 22px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-restart{padding:11px 22px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-back-lvl:hover{background:#7f8c8d;}.btn-restart:hover{background:#2980b9;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;justify-content:center;align-items:center;padding:16px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--s);padding:36px 28px;border-radius:18px;text-align:center;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.modal-emoji{font-size:72px;margin-bottom:14px;}
+.modal-title{font-family:var(--fn);font-weight:900;font-size:1.6rem;margin-bottom:4px;}
+.modal-stars{font-size:44px;margin:14px 0;}
+.modal-stats{font-size:.92rem;line-height:2.1;color:var(--mu);margin-bottom:22px;}
+.modal-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-choose{padding:13px 24px;background:#95a5a6;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-again{padding:13px 24px;background:#3498db;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;}
+.btn-next{padding:13px 24px;background:#27ae60;color:#fff;border-radius:9px;font-family:var(--fn);font-weight:800;font-size:.9rem;display:none;}
+.btn-choose:hover{background:#7f8c8d;}.btn-again:hover{background:#2980b9;}.btn-next:hover{background:#219a52;}
+
+@media(max-width:600px){
+  .match-card{min-height:90px;padding:10px 8px;}
+  .match-card .card-text{font-size:.8rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="ni">
+    <a href="../../index.html" class="back">&#8592; All Games</a>
+    <span class="nav-title">🎯 Matching Pairs Game</span>
+    <div class="nav-right">
+      <button class="snd-btn" id="snd-btn" onclick="toggleSound()">🔊 Sound: ON</button>
+      <button class="admin-btn" onclick="toggleAdmin()">⚙️ Manage Pairs</button>
+      <button class="tt" data-theme-toggle aria-label="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-panel" id="admin-panel">
+    <h3>📝 Card Pair Management</h3>
+    <div class="ap-grid">
+      <div class="ap-box">
+        <h5>Card A (e.g. English)</h5>
+        <label>Text</label>
+        <input type="text" id="inp-a" placeholder="e.g. Rich">
+        <label>Image (optional)</label>
+        <input type="file" id="img-a" accept="image/*" onchange="previewImg(event,'prev-a')">
+        <div class="preview" id="prev-a">Preview</div>
+      </div>
+      <div class="ap-box">
+        <h5>Card B (e.g. Arabic)</h5>
+        <label>Text</label>
+        <input type="text" id="inp-b" placeholder="e.g. غنِيٌّ">
+        <label>Image (optional)</label>
+        <input type="file" id="img-b" accept="image/*" onchange="previewImg(event,'prev-b')">
+        <div class="preview" id="prev-b">Preview</div>
+      </div>
+    </div>
+    <button class="btn-add-pair" onclick="addPair()">➕ Add Pair</button>
+    <div style="margin-top:20px">
+      <strong style="font-family:var(--fn);font-size:.9rem">Existing Pairs (<span id="pair-count">0</span>)</strong>
+      <div class="pairs-grid" id="pairs-list"></div>
+      <button class="btn-reset-pairs" onclick="resetPairs()">🗑️ Reset to Defaults</button>
+    </div>
+    <button class="btn-close-admin" onclick="toggleAdmin()">Close</button>
+  </div>
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">
+    <h1>🎯 Matching Pairs Game</h1>
+    <p>Match the pairs! Select two cards that belong together. Choose your difficulty level.</p>
+  </div>
+
+  <!-- LEVEL SCREEN -->
+  <div id="level-screen">
+    <div class="level-grid">
+
+      <div class="level-card lc-easy">
+        <h3>🟢 Easy</h3>
+        <div class="level-meta">
+          <div>📊 4 pairs (8 cards)</div>
+          <div>⏱️ 90 seconds</div>
+          <div class="level-stars" id="easy-stars">Not yet completed</div>
+        </div>
+        <button class="btn-level btn-easy" id="btn-easy" onclick="startGame('easy')">Start Easy</button>
+      </div>
+
+      <div class="level-card lc-medium locked" id="card-medium">
+        <div class="lock-badge" style="background:#e65100;" id="lock-medium">🔒 LOCKED</div>
+        <h3>🟡 Medium</h3>
+        <div class="level-meta">
+          <div>📊 6 pairs (12 cards)</div>
+          <div>⏱️ 120 seconds</div>
+          <div class="level-stars" id="medium-stars">Not yet completed</div>
+        </div>
+        <button class="btn-level btn-locked" id="btn-medium" onclick="startGame('medium')" disabled>Complete Easy First</button>
+      </div>
+
+      <div class="level-card lc-hard locked" id="card-hard">
+        <div class="lock-badge" style="background:#c0392b;" id="lock-hard">🔒 LOCKED</div>
+        <h3>🔴 Hard</h3>
+        <div class="level-meta">
+          <div>📊 9 pairs (18 cards)</div>
+          <div>⏱️ 150 seconds</div>
+          <div class="level-stars" id="hard-stars">Not yet completed</div>
+        </div>
+        <button class="btn-level btn-locked" id="btn-hard" onclick="startGame('hard')" disabled>Complete Medium First</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen">
+    <div class="stats-bar">
+      <div class="stat stat-level">Level: <span id="lbl-level">Easy</span></div>
+      <div class="stat stat-timer" id="stat-timer">⏱️ <span id="lbl-timer">90</span>s</div>
+      <div class="stat stat-attempts">🎯 Attempts: <span id="lbl-attempts">0</span></div>
+      <div class="stat stat-matched">✓ <span id="lbl-matched">0</span>/<span id="lbl-total">4</span></div>
+    </div>
+    <div id="game-board"></div>
+    <div class="game-controls">
+      <button class="btn-back-lvl" onclick="backToLevels()">← Back to Levels</button>
+      <button class="btn-restart" onclick="restartGame()">🔄 Restart</button>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- WIN/LOSE MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="mod-emoji">🎉</div>
+    <div class="modal-title" id="mod-title">Complete!</div>
+    <div class="modal-stars" id="mod-stars">⭐⭐⭐</div>
+    <div class="modal-stats" id="mod-stats"></div>
+    <div class="modal-btns">
+      <button class="btn-choose" onclick="backToLevels()">Choose Level</button>
+      <button class="btn-again" onclick="restartGame()">Play Again</button>
+      <button class="btn-next" id="btn-next">Next Level →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  /* ── DARK MODE ── */
+  (function(){
+    const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+    let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    r.setAttribute('data-theme',d);
+    t&&t.addEventListener('click',()=>{d=d==='dark'?'light':'dark';r.setAttribute('data-theme',d);});
+  })();
+
+  /* ── SOUND ── */
+  let audioCtx=null,soundOn=true;
+  function ctx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+  function tone(freq,type,vol,dur,start){
+    try{
+      const o=ctx().createOscillator(),g=ctx().createGain();
+      o.connect(g);g.connect(ctx().destination);
+      o.frequency.value=freq;o.type=type;
+      const s=start||ctx().currentTime;
+      g.gain.setValueAtTime(vol,s);
+      g.gain.exponentialRampToValueAtTime(0.001,s+dur);
+      o.start(s);o.stop(s+dur+.01);
+    }catch(e){}
+  }
+  function sSelect(){if(!soundOn)return;tone(600,'sine',.2,.1);}
+  function sMatch(){if(!soundOn)return;[523,659,784].forEach((f,i)=>tone(f,'sine',.2,.3,ctx().currentTime+i*.08));}
+  function sWrong(){if(!soundOn)return;tone(200,'sawtooth',.2,.2);}
+  function sWin(){if(!soundOn)return;[523,587,659,784,1047].forEach((f,i)=>tone(f,'triangle',.25,.4,ctx().currentTime+i*.15));}
+  function sLose(){if(!soundOn)return;[400,350,300,250].forEach((f,i)=>tone(f,'sawtooth',.15,.3,ctx().currentTime+i*.15));}
+  function sClick(){if(!soundOn)return;tone(1200,'sine',.1,.05);}
+
+  window.toggleSound=function(){
+    soundOn=!soundOn;
+    const b=document.getElementById('snd-btn');
+    b.textContent=soundOn?'🔊 Sound: ON':'🔇 Sound: OFF';
+    b.className=soundOn?'snd-btn':'snd-btn off';
+    if(soundOn)sClick();
+  };
+
+  /* ── DEFAULT PAIRS ── */
+  const DEFAULTS=[
+    {cardA:{text:'Rich',image:''},cardB:{text:'غنِيٌّ',image:''}},
+    {cardA:{text:'Kind / compassionate',image:''},cardB:{text:'شفيق',image:''}},
+    {cardA:{text:'Warn',image:''},cardB:{text:'انْذِر',image:''}},
+    {cardA:{text:'Gentle',image:''},cardB:{text:'حليم',image:''}},
+    {cardA:{text:'To reveal / send revelation',image:''},cardB:{text:'اوحي',image:''}},
+    {cardA:{text:'Leader',image:''},cardB:{text:'رَءِيْسٌ',image:''}},
+    {cardA:{text:'Painful',image:''},cardB:{text:'اليم',image:''}},
+    {cardA:{text:'To choose',image:''},cardB:{text:'اختار',image:''}},
+    {cardA:{text:'Message',image:''},cardB:{text:'رسالة',image:''}}
+  ];
+
+  const LEVELS={
+    easy:{pairs:4,time:90,cols:4},
+    medium:{pairs:6,time:120,cols:4},
+    hard:{pairs:9,time:150,cols:6}
+  };
+
+  let savedPairs=[...DEFAULTS];
+  let progress={};
+
+  function load(){
+    try{
+      const sp=sessionStorage.getItem('matchPairs');
+      const sg=sessionStorage.getItem('matchProgress');
+      if(sp)savedPairs=JSON.parse(sp);
+      if(sg)progress=JSON.parse(sg);
+    }catch(e){}
+  }
+  function save(){
+    try{
+      sessionStorage.setItem('matchPairs',JSON.stringify(savedPairs));
+      sessionStorage.setItem('matchProgress',JSON.stringify(progress));
+    }catch(e){}
+  }
+  load();
+
+  /* ── ADMIN ── */
+  window.toggleAdmin=function(){
+    sClick();
+    const p=document.getElementById('admin-panel');
+    p.style.display=p.style.display==='none'?'block':'none';
+    renderPairsList();
+  };
+
+  window.previewImg=function(e,id){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{document.getElementById(id).innerHTML='<img src="'+ev.target.result+'">';};
+    r.readAsDataURL(f);
+  };
+
+  window.addPair=function(){
+    const aText=document.getElementById('inp-a').value.trim();
+    const bText=document.getElementById('inp-b').value.trim();
+    if(!aText&&!bText){alert('Please fill in text for at least one card.');return;}
+    const af=document.getElementById('img-a').files[0];
+    const bf=document.getElementById('img-b').files[0];
+    const reads=[
+      af?new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(af);}):Promise.resolve(''),
+      bf?new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(bf);}):Promise.resolve('')
+    ];
+    Promise.all(reads).then(([ai,bi])=>{
+      savedPairs.push({cardA:{text:aText,image:ai},cardB:{text:bText,image:bi}});
+      save();renderPairsList();updateLevelUI();sClick();
+      document.getElementById('inp-a').value='';
+      document.getElementById('inp-b').value='';
+      document.getElementById('img-a').value='';
+      document.getElementById('img-b').value='';
+      document.getElementById('prev-a').innerHTML='Preview';
+      document.getElementById('prev-b').innerHTML='Preview';
+      alert('Pair added!');
+    });
+  };
+
+  window.deletePair=function(i){
+    if(!confirm('Delete this pair?'))return;
+    savedPairs.splice(i,1);save();renderPairsList();updateLevelUI();sClick();
+  };
+
+  window.resetPairs=function(){
+    if(!confirm('Reset to default pairs?'))return;
+    savedPairs=[...DEFAULTS];save();renderPairsList();updateLevelUI();sClick();
+  };
+
+  function renderPairsList(){
+    document.getElementById('pair-count').textContent=savedPairs.length;
+    const l=document.getElementById('pairs-list');
+    if(!savedPairs.length){l.innerHTML='<p style="color:var(--mu);padding:16px;font-size:.85rem;">No pairs yet.</p>';return;}
+    l.innerHTML=savedPairs.map((p,i)=>`
+      <div class="pair-item">
+        <div class="pair-row">
+          <div>${p.cardA.image?'<img src="'+p.cardA.image+'" style="max-height:36px;margin:0 auto 3px;">':''}<strong>${p.cardA.text||'(image)'}</strong></div>
+          <div class="pair-sep">⟷</div>
+          <div>${p.cardB.image?'<img src="'+p.cardB.image+'" style="max-height:36px;margin:0 auto 3px;">':''}<strong>${p.cardB.text||'(image)'}</strong></div>
+        </div>
+        <button class="btn-del-pair" onclick="deletePair(${i})">Delete</button>
+      </div>`).join('');
+  }
+
+  /* ── LEVEL UI ── */
+  function updateLevelUI(){
+    const ep=progress.easy||0,mp=progress.medium||0,hp=progress.hard||0;
+    document.getElementById('easy-stars').textContent=ep?'⭐'.repeat(ep)+' Completed!':'Not yet completed';
+    document.getElementById('medium-stars').textContent=mp?'⭐'.repeat(mp)+' Completed!':'Not yet completed';
+    document.getElementById('hard-stars').textContent=hp?'⭐'.repeat(hp)+' Completed!':'Not yet completed';
+
+    const eb=document.getElementById('btn-easy');
+    if(savedPairs.length<4){eb.disabled=true;eb.textContent='Need 4+ pairs';eb.className='btn-level btn-locked';}
+    else{eb.disabled=false;eb.textContent='Start Easy';eb.className='btn-level btn-easy';}
+
+    const mc=document.getElementById('card-medium'),mb=document.getElementById('btn-medium'),lm=document.getElementById('lock-medium');
+    if(ep>0){mc.classList.remove('locked');mb.disabled=false;mb.textContent='Start Medium';mb.className='btn-level btn-medium';if(lm)lm.style.display='none';}
+
+    const hc=document.getElementById('card-hard'),hb=document.getElementById('btn-hard'),lh=document.getElementById('lock-hard');
+    if(mp>0){hc.classList.remove('locked');hb.disabled=false;hb.textContent='Start Hard';hb.className='btn-level btn-hard';if(lh)lh.style.display='none';}
+  }
+
+  /* ── GAME ── */
+  function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+  let currentLevel='easy',gameCards=[],selected=[],matchedPairs=0,attempts=0,timeLeft=0,timer=null,canSelect=true;
+
+  window.startGame=function(level){
+    if(savedPairs.length<LEVELS[level].pairs){alert('Not enough pairs for this level!');return;}
+    sClick();
+    currentLevel=level;
+    const cfg=LEVELS[level];
+    matchedPairs=0;attempts=0;selected=[];timeLeft=cfg.time;canSelect=true;
+    if(timer)clearInterval(timer);
+
+    document.getElementById('level-screen').style.display='none';
+    document.getElementById('game-screen').style.display='block';
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('lbl-level').textContent=level.charAt(0).toUpperCase()+level.slice(1);
+    document.getElementById('lbl-total').textContent=cfg.pairs;
+    document.getElementById('lbl-matched').textContent='0';
+    document.getElementById('lbl-attempts').textContent='0';
+    document.getElementById('lbl-timer').textContent=timeLeft;
+    document.getElementById('stat-timer').classList.remove('urgent');
+
+    buildBoard(cfg.pairs);
+    startTimer();
+  };
+
+  function buildBoard(pairs){
+    const sel=shuffle(savedPairs).slice(0,pairs);
+    gameCards=[];
+    sel.forEach((p,pid)=>{
+      gameCards.push({pairId:pid,text:p.cardA.text,image:p.cardA.image});
+      gameCards.push({pairId:pid,text:p.cardB.text,image:p.cardB.image});
+    });
+    gameCards=shuffle(gameCards);
+
+    const board=document.getElementById('game-board');
+    board.innerHTML='';
+    board.style.gridTemplateColumns=`repeat(${LEVELS[currentLevel].cols},minmax(0,1fr))`;
+    board.style.maxWidth=LEVELS[currentLevel].cols===6?'860px':'640px';
+    board.style.margin='16px auto';
+
+    gameCards.forEach((cd,idx)=>{
+      const el=document.createElement('div');
+      el.className='match-card';
+      const imgH=cd.image?`<img src="${cd.image}" alt="${cd.text}" loading="lazy">`:'';
+      const txtH=cd.text?`<div class="card-text">${cd.text}</div>`:'';
+      el.innerHTML=imgH+txtH;
+      el.addEventListener('click',()=>selectCard(el,cd,idx));
+      board.appendChild(el);
+    });
+  }
+
+  function selectCard(el,cd,idx){
+    if(!canSelect||el.classList.contains('matched')||el.classList.contains('selected'))return;
+    sSelect();
+    el.classList.add('selected');
+    selected.push({el,cd,idx});
+    if(selected.length===2){
+      canSelect=false;
+      attempts++;
+      document.getElementById('lbl-attempts').textContent=attempts;
+      setTimeout(checkMatch,750);
+    }
+  }
+
+  function checkMatch(){
+    const [a,b]=selected;
+    if(a.cd.pairId===b.cd.pairId){
+      sMatch();
+      a.el.classList.remove('selected');b.el.classList.remove('selected');
+      a.el.classList.add('matched');b.el.classList.add('matched');
+      matchedPairs++;
+      document.getElementById('lbl-matched').textContent=matchedPairs;
+      if(navigator.vibrate)navigator.vibrate([50,30,50]);
+      if(matchedPairs===LEVELS[currentLevel].pairs)setTimeout(()=>endGame(true),500);
+    } else {
+      sWrong();
+      a.el.classList.add('wrong');b.el.classList.add('wrong');
+      if(navigator.vibrate)navigator.vibrate(80);
+      setTimeout(()=>{
+        a.el.classList.remove('selected','wrong');
+        b.el.classList.remove('selected','wrong');
+      },550);
+    }
+    selected=[];canSelect=true;
+  }
+
+  function startTimer(){
+    timer=setInterval(()=>{
+      timeLeft--;
+      document.getElementById('lbl-timer').textContent=timeLeft;
+      if(timeLeft<=10)document.getElementById('stat-timer').classList.add('urgent');
+      if(timeLeft<=0){clearInterval(timer);endGame(false);}
+    },1000);
+  }
+
+  function endGame(won){
+    clearInterval(timer);canSelect=false;
+    const cfg=LEVELS[currentLevel];
+    let stars=0;
+    if(won){
+      sWin();
+      const used=cfg.time-timeLeft,eff=attempts/cfg.pairs;
+      stars=(eff<=1.5&&used<=cfg.time*.7)?3:eff<=2.5?2:1;
+      progress[currentLevel]=Math.max(progress[currentLevel]||0,stars);
+      save();
+      document.getElementById('mod-emoji').textContent='🎉';
+      document.getElementById('mod-title').textContent='Level Complete!';
+      document.getElementById('mod-title').style.color='#27ae60';
+      document.getElementById('mod-stars').textContent='⭐'.repeat(stars);
+      document.getElementById('mod-stats').innerHTML=`<div>⏱️ Time used: ${cfg.time-timeLeft}s</div><div>🎯 Attempts: ${attempts}</div><div>✓ Matched: ${matchedPairs}/${cfg.pairs} pairs</div>`;
+      const nb=document.getElementById('btn-next');
+      const nextLvl={easy:'medium',medium:'hard'}[currentLevel];
+      if(nextLvl){nb.style.display='inline-block';nb.onclick=()=>{sClick();document.getElementById('modal').classList.remove('show');startGame(nextLvl);};}
+      else nb.style.display='none';
+    } else {
+      sLose();
+      document.getElementById('mod-emoji').textContent='⏰';
+      document.getElementById('mod-title').textContent="Time's Up!";
+      document.getElementById('mod-title').style.color='#e74c3c';
+      document.getElementById('mod-stars').textContent='';
+      document.getElementById('mod-stats').innerHTML=`<div>✓ Matched: ${matchedPairs}/${cfg.pairs} pairs</div><div>🎯 Attempts: ${attempts}</div><div>Try again!</div>`;
+      document.getElementById('btn-next').style.display='none';
+    }
+    document.getElementById('modal').classList.add('show');
+    updateLevelUI();
+  }
+
+  window.backToLevels=function(){
+    sClick();clearInterval(timer);
+    document.getElementById('modal').classList.remove('show');
+    document.getElementById('game-screen').style.display='none';
+    document.getElementById('level-screen').style.display='block';
+    updateLevelUI();
+  };
+
+  window.restartGame=function(){
+    sClick();
+    document.getElementById('modal').classList.remove('show');
+    startGame(currentLevel);
+  };
+
+  /* ── INIT ── */
+  renderPairsList();
+  updateLevelUI();
+
+})();
+</script>
+</body>
+</html>
