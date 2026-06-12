@@ -1,4 +1,4 @@
-## Fun games for you to play!
+## Fun games for you to play.
 
 <!--
 **MEDACO-GAMES/medaco-games** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
